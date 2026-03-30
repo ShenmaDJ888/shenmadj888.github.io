@@ -3,79 +3,68 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-  <title>TRON 多签权限添加</title>
+  <title>TRON 多签消息签名</title>
   <style>
     * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
-      background: #0f1115;
-      color: #e8ecf3;
+      background: #0b0f14;
+      color: #eaf1fb;
     }
     .wrap {
-      max-width: 980px;
+      max-width: 860px;
       margin: 0 auto;
-      padding: 24px;
+      padding: 20px;
     }
     .card {
-      background: #171a21;
-      border: 1px solid #2a2f3a;
-      border-radius: 16px;
+      background: #131922;
+      border: 1px solid #283244;
+      border-radius: 18px;
       padding: 18px;
-      margin-bottom: 18px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+      margin-bottom: 16px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.2);
     }
     h1 {
       margin: 0 0 10px;
       font-size: 28px;
-      font-weight: 700;
     }
     .desc {
-      color: #aeb8c7;
       font-size: 14px;
-      line-height: 1.75;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
-    @media (max-width: 760px) {
-      .grid {
-        grid-template-columns: 1fr;
-      }
+      color: #a9b7cb;
+      line-height: 1.8;
     }
     .field { margin-bottom: 14px; }
     .label {
       display: block;
       margin-bottom: 8px;
-      color: #c7d0dd;
       font-size: 14px;
-      font-weight: 600;
+      font-weight: 700;
+      color: #dce7f7;
     }
     input, textarea {
       width: 100%;
-      border: 1px solid #313846;
-      background: #0f131a;
-      color: #eef3fb;
-      border-radius: 12px;
       padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid #2c3749;
+      background: #0e141d;
+      color: #eef4ff;
       outline: none;
       font-size: 14px;
     }
     textarea {
-      min-height: 150px;
       resize: vertical;
-      line-height: 1.6;
+      min-height: 120px;
+      line-height: 1.7;
       font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
       white-space: pre-wrap;
       word-break: break-all;
     }
-    input[readonly] {
-      color: #9fb0c8;
-      background: #11161f;
+    input[readonly], textarea[readonly] {
+      color: #b9c7dc;
+      background: #111822;
     }
-    .btn-row {
+    .btns {
       display: flex;
       flex-wrap: wrap;
       gap: 12px;
@@ -88,74 +77,40 @@
       font-size: 14px;
       font-weight: 700;
       cursor: pointer;
-      transition: 0.2s ease;
     }
-    button.primary {
+    .primary {
       background: #2f7cff;
       color: #fff;
     }
-    button.primary:hover { background: #266ceb; }
-    button.secondary {
-      background: #232a36;
-      color: #e8ecf3;
-      border: 1px solid #313846;
+    .secondary {
+      background: #202938;
+      color: #eef4ff;
+      border: 1px solid #2e3b50;
     }
-    button.secondary:hover { background: #2a3340; }
-    button.danger {
-      background: #d64444;
+    .danger {
+      background: #e85b52;
       color: #fff;
     }
-    button:disabled {
-      opacity: 0.55;
-      cursor: not-allowed;
-    }
-    .tag {
-      display: inline-block;
-      padding: 4px 10px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 700;
-      background: #1e2633;
-      color: #8fb5ff;
-      border: 1px solid #2d3b57;
-      margin-right: 8px;
-      margin-bottom: 8px;
-    }
     .warn {
-      color: #ffcf70;
+      margin-top: 10px;
       font-size: 13px;
       line-height: 1.7;
+      color: #ffca74;
     }
+    .ok { color: #54e596; }
     .small {
       font-size: 12px;
-      color: #98a5b8;
-      margin-top: 8px;
+      color: #96a7bf;
+      margin-top: 6px;
       line-height: 1.6;
     }
-    .preview-box {
-      background: #0f131a;
-      border: 1px solid #313846;
+    .preview {
+      background: #0e141d;
+      border: 1px solid #2c3749;
       border-radius: 12px;
       padding: 14px;
-    }
-    .kv {
-      display: flex;
-      gap: 10px;
-      padding: 8px 0;
-      border-bottom: 1px dashed #2a3140;
-      align-items: flex-start;
-    }
-    .kv:last-child { border-bottom: none; }
-    .kv .k {
-      width: 160px;
-      flex-shrink: 0;
-      color: #95a4bb;
-      font-size: 13px;
-    }
-    .kv .v {
-      flex: 1;
-      font-size: 14px;
-      color: #edf2fb;
+      line-height: 1.8;
+      color: #dfe9f9;
       word-break: break-all;
     }
   </style>
@@ -163,164 +118,104 @@
 <body>
   <div class="wrap">
     <div class="card">
-      <h1>TRON 多签权限添加</h1>
+      <h1>TRON 多签管理</h1>
       <div class="desc">
-        这个页面会读取你当前账户权限，然后把
-        <b>TJfe4EZzNm5oomMNUwLd1kCgwwoJokFwGN</b>
-        加入到 <b>owner permission</b> 和你选中的 <b>active permission</b> 中。<br />
-        默认配置是当前钱包权重 1，新地址权重 1，阈值 2，也就是 <b>2/2 多签</b>。
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="grid">
-        <div>
-          <div class="field">
-            <label class="label">当前钱包地址</label>
-            <input id="currentAddress" readonly placeholder="请先连接 TronLink" />
-          </div>
-
-          <div class="field">
-            <label class="label">新增权限地址</label>
-            <input id="newAddress" value="TJfe4EZzNm5oomMNUwLd1kCgwwoJokFwGN" />
-          </div>
-
-          <div class="field">
-            <label class="label">当前钱包权重</label>
-            <input id="currentWeight" type="number" value="1" min="1" />
-          </div>
-
-          <div class="field">
-            <label class="label">新增地址权重</label>
-            <input id="newWeight" type="number" value="1" min="1" />
-          </div>
-
-          <div class="field">
-            <label class="label">阈值 threshold</label>
-            <input id="threshold" type="number" value="2" min="1" />
-          </div>
-
-          <div class="field">
-            <label class="label">要修改的 active_permission 索引</label>
-            <input id="activeIndex" type="number" value="0" min="0" />
-            <div class="small">默认改第 1 个 active_permission，也就是索引 0。</div>
-          </div>
-        </div>
-
-        <div>
-          <div class="field">
-            <label class="label">操作说明</label>
-            <div class="preview-box">
-              <div class="kv">
-                <div class="k">修改内容</div>
-                <div class="v">owner + 指定 active 一起加入新地址</div>
-              </div>
-              <div class="kv">
-                <div class="k">新增地址</div>
-                <div class="v" id="previewNewAddress">TJfe4EZzNm5oomMNUwLd1kCgwwoJokFwGN</div>
-              </div>
-              <div class="kv">
-                <div class="k">默认结构</div>
-                <div class="v">当前钱包 1 + 新地址 1，threshold 2</div>
-              </div>
-              <div class="kv">
-                <div class="k">结果</div>
-                <div class="v">后续使用对应 permission 的交易，需要累计权重达到阈值</div>
-              </div>
-            </div>
-            <div class="small">
-              注意：权限更新会覆盖原有整套权限结构，不是局部追加。owner 和 active 都必须传完整。
-            </div>
-          </div>
-
-          <div class="field">
-            <span class="tag">owner 会更新</span>
-            <span class="tag">active 会更新</span>
-            <span class="tag">先小号测试</span>
-          </div>
-
-          <div class="btn-row">
-            <button class="primary" id="connectBtn">连接钱包</button>
-            <button class="secondary" id="loadBtn">读取权限</button>
-            <button class="secondary" id="previewBtn">生成预览</button>
-            <button class="danger" id="updateBtn">发起权限更新签名</button>
-          </div>
-        </div>
+        这是<strong>消息签名版</strong>页面，不会直接发起“升级账户权限”交易。<br />
+        钱包弹窗会更接近你截图里的“在网站上签名 / 请求签名”效果。<br />
+        这一步只表示：<strong>当前钱包对某段多签配置说明进行了签名确认</strong>。
       </div>
     </div>
 
     <div class="card">
       <div class="field">
-        <label class="label">权限更新预览</label>
-        <textarea id="previewArea" readonly placeholder="点击“生成预览”后会显示规范化后的 owner / active 结构"></textarea>
+        <label class="label">当前主账户（Owner）</label>
+        <input id="ownerAddress" readonly placeholder="请先连接钱包" />
       </div>
-    </div>
 
-    <div class="card">
       <div class="field">
-        <label class="label">当前账户原始权限数据</label>
-        <textarea id="accountInfo" readonly placeholder="点击“读取权限”后显示"></textarea>
+        <label class="label">要增加的共同签名地址</label>
+        <input id="newSigner" value="TJfe4EZzNm5oomMNUwLd1kCgwwoJokFwGN" />
       </div>
-    </div>
 
-    <div class="card">
       <div class="field">
-        <label class="label">执行日志</label>
-        <textarea id="result" readonly placeholder="执行结果会显示在这里"></textarea>
+        <label class="label">阈值（threshold）</label>
+        <input id="threshold" type="number" value="2" min="1" />
       </div>
+
+      <div class="field">
+        <label class="label">当前主账户权重</label>
+        <input id="ownerWeight" type="number" value="1" min="1" />
+      </div>
+
+      <div class="field">
+        <label class="label">新增地址权重</label>
+        <input id="newWeight" type="number" value="1" min="1" />
+      </div>
+
+      <div class="btns">
+        <button class="primary" id="connectBtn">连接钱包</button>
+        <button class="secondary" id="buildBtn">生成签名消息</button>
+        <button class="danger" id="signBtn">请求签名</button>
+      </div>
+
       <div class="warn">
-        这会修改链上权限结构。广播前请确认 threshold 可达成、原地址没有被误删、active 索引没有填错。
+        注意：这里是消息签名，不会直接上链修改权限。  
+        如果你后面要真正把多签写进链上，还需要单独再发权限更新交易。
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="field">
+        <label class="label">人类可读签名内容</label>
+        <div id="messagePreview" class="preview">点击“生成签名消息”后显示</div>
+      </div>
+
+      <div class="field">
+        <label class="label">签名消息 HEX</label>
+        <textarea id="messageHex" readonly placeholder="这里会显示发给钱包签名的 hex 数据"></textarea>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="field">
+        <label class="label">签名结果</label>
+        <textarea id="signatureResult" readonly placeholder="签名完成后显示签名值"></textarea>
+      </div>
+
+      <div class="field">
+        <label class="label">日志</label>
+        <textarea id="logs" readonly placeholder="运行日志"></textarea>
       </div>
     </div>
   </div>
 
   <script>
     let tronWeb = null;
-    let currentAccount = null;
-    let preparedData = null;
 
-    function setText(id, value) {
-      document.getElementById(id).value =
-        typeof value === "string" ? value : JSON.stringify(value, null, 2);
-    }
-
-    function appendLog(msg, type = "") {
-      const now = new Date().toLocaleTimeString();
-      const area = document.getElementById("result");
-      const prefix = type ? `[${now}] [${type}] ` : `[${now}] `;
-      area.value += prefix + msg + "\n\n";
-      area.scrollTop = area.scrollHeight;
-    }
-
-    function clearLog() {
-      document.getElementById("result").value = "";
-    }
-
-    function deepClone(obj) {
-      return JSON.parse(JSON.stringify(obj));
+    function log(msg) {
+      const el = document.getElementById("logs");
+      const time = new Date().toLocaleTimeString();
+      el.value += `[${time}] ${msg}\n`;
+      el.scrollTop = el.scrollHeight;
     }
 
     function ensureTronWeb() {
       if (!window.tronWeb || !window.tronWeb.defaultAddress || !window.tronWeb.defaultAddress.base58) {
-        throw new Error("未检测到 TronLink，或钱包尚未连接/解锁");
+        throw new Error("未检测到 TronLink，或者钱包未连接/未解锁");
       }
       tronWeb = window.tronWeb;
       return tronWeb;
     }
 
-    function toHexAddress(addr) {
-      const tw = ensureTronWeb();
-      if (!tw.isAddress(addr)) {
-        throw new Error("非法 TRON 地址：" + addr);
-      }
-      const hex = tw.address.toHex(addr);
-      if (!hex || !hex.startsWith("41")) {
-        throw new Error("地址转 hex 失败：" + addr);
-      }
-      return hex;
+    function utf8ToHex(str) {
+      const encoder = new TextEncoder();
+      const bytes = encoder.encode(str);
+      return Array.from(bytes)
+        .map(b => b.toString(16).padStart(2, "0"))
+        .join("");
     }
 
-    function normalizeWeight(v, name) {
+    function isPositiveInt(v, name) {
       const n = Number(v);
       if (!Number.isInteger(n) || n <= 0) {
         throw new Error(name + " 必须是大于 0 的整数");
@@ -328,316 +223,101 @@
       return n;
     }
 
-    function normalizeIndex(v, name) {
-      const n = Number(v);
-      if (!Number.isInteger(n) || n < 0) {
-        throw new Error(name + " 必须是大于等于 0 的整数");
-      }
-      return n;
-    }
-
-    function getFormValues() {
+    function buildSignMessage() {
       const tw = ensureTronWeb();
+      const owner = tw.defaultAddress.base58;
+      const newSigner = document.getElementById("newSigner").value.trim();
+      const threshold = isPositiveInt(document.getElementById("threshold").value, "threshold");
+      const ownerWeight = isPositiveInt(document.getElementById("ownerWeight").value, "当前主账户权重");
+      const newWeight = isPositiveInt(document.getElementById("newWeight").value, "新增地址权重");
 
-      const currentAddress = tw.defaultAddress.base58;
-      const newAddress = document.getElementById("newAddress").value.trim();
-      const currentWeight = normalizeWeight(document.getElementById("currentWeight").value, "当前钱包权重");
-      const newWeight = normalizeWeight(document.getElementById("newWeight").value, "新增地址权重");
-      const threshold = normalizeWeight(document.getElementById("threshold").value, "threshold");
-      const activeIndex = normalizeIndex(document.getElementById("activeIndex").value, "active_permission 索引");
-
-      if (!tw.isAddress(newAddress)) {
-        throw new Error("新增权限地址不是合法 TRON 地址");
+      if (!tw.isAddress(newSigner)) {
+        throw new Error("新增地址不是合法的 TRON 地址");
       }
 
-      return { currentAddress, newAddress, currentWeight, newWeight, threshold, activeIndex };
-    }
+      const timestamp = Date.now();
 
-    function upsertKey(keys, hexAddress, weight) {
-      const idx = keys.findIndex(k => String(k.address || "").toLowerCase() === hexAddress.toLowerCase());
-      if (idx >= 0) {
-        keys[idx].weight = weight;
-      } else {
-        keys.push({ address: hexAddress, weight });
-      }
-    }
+      const message = [
+        "TRON MULTISIG AUTHORIZATION",
+        `owner=${owner}`,
+        `new_signer=${newSigner}`,
+        `owner_weight=${ownerWeight}`,
+        `new_signer_weight=${newWeight}`,
+        `threshold=${threshold}`,
+        `action=add_permission_signer`,
+        `network=tron`,
+        `timestamp=${timestamp}`
+      ].join("\n");
 
-    function normalizeKeys(inputKeys) {
-      const keys = Array.isArray(inputKeys) ? deepClone(inputKeys) : [];
-      const out = [];
+      const hex = utf8ToHex(message);
 
-      for (const item of keys) {
-        if (!item || !item.address) continue;
-        let hexAddress = item.address;
-
-        if (/^T/i.test(hexAddress)) {
-          hexAddress = toHexAddress(hexAddress);
-        }
-
-        if (!/^41[a-fA-F0-9]{40}$/.test(hexAddress)) {
-          throw new Error("权限 key 地址格式不合法：" + item.address);
-        }
-
-        const weight = normalizeWeight(item.weight, "权限 key weight");
-        out.push({
-          address: hexAddress,
-          weight
-        });
-      }
-
-      if (out.length === 0) {
-        throw new Error("权限 keys 不能为空");
-      }
-
-      return out;
-    }
-
-    function normalizeOwnerPermission(rawOwner, currentHex, newHex, currentWeight, newWeight, threshold) {
-      const owner = rawOwner ? deepClone(rawOwner) : {};
-
-      const keys = normalizeKeys(owner.keys || []);
-      upsertKey(keys, currentHex, currentWeight);
-      upsertKey(keys, newHex, newWeight);
-
-      const totalWeight = keys.reduce((sum, k) => sum + Number(k.weight || 0), 0);
-      if (threshold > totalWeight) {
-        throw new Error("owner threshold 大于总权重，后续 owner 签名将无法达成");
-      }
+      document.getElementById("messagePreview").textContent = message;
+      document.getElementById("messageHex").value = "0x" + hex;
 
       return {
-        type: 0,
-        permission_name: owner.permission_name || "owner",
-        threshold,
-        keys
+        message,
+        hex
       };
-    }
-
-    function normalizeActivePermission(rawActive, currentHex, newHex, currentWeight, newWeight, threshold, fallbackId) {
-      const active = rawActive ? deepClone(rawActive) : {};
-
-      if (!active.operations || typeof active.operations !== "string") {
-        throw new Error("目标 active_permission 缺少 operations，无法安全更新");
-      }
-
-      const keys = normalizeKeys(active.keys || []);
-      upsertKey(keys, currentHex, currentWeight);
-      upsertKey(keys, newHex, newWeight);
-
-      const totalWeight = keys.reduce((sum, k) => sum + Number(k.weight || 0), 0);
-      if (threshold > totalWeight) {
-        throw new Error("active threshold 大于总权重，后续 active 签名将无法达成");
-      }
-
-      return {
-        type: 2,
-        id: Number.isInteger(active.id) ? active.id : fallbackId,
-        permission_name: active.permission_name || ("active" + Math.max(0, fallbackId - 2)),
-        threshold,
-        parent_id: 0,
-        operations: active.operations,
-        keys
-      };
-    }
-
-    function normalizeAllActives(rawActives, targetIndex, currentHex, newHex, currentWeight, newWeight, threshold) {
-      if (!Array.isArray(rawActives) || rawActives.length === 0) {
-        throw new Error("当前账户没有 active_permission");
-      }
-
-      if (targetIndex >= rawActives.length) {
-        throw new Error(`active_permission 索引越界，当前最大可用索引是 ${rawActives.length - 1}`);
-      }
-
-      return rawActives.map((item, idx) => {
-        const fallbackId = Number.isInteger(item?.id) ? item.id : (idx + 2);
-
-        if (idx === targetIndex) {
-          return normalizeActivePermission(
-            item,
-            currentHex,
-            newHex,
-            currentWeight,
-            newWeight,
-            threshold,
-            fallbackId
-          );
-        }
-
-        const keys = normalizeKeys(item.keys || []);
-        return {
-          type: 2,
-          id: fallbackId,
-          permission_name: item.permission_name || ("active" + idx),
-          threshold: normalizeWeight(item.threshold || 1, "active threshold"),
-          parent_id: 0,
-          operations: item.operations,
-          keys
-        };
-      });
     }
 
     async function connectWallet() {
       try {
-        clearLog();
-
         if (window.tronLink && typeof window.tronLink.request === "function") {
           try {
             await window.tronLink.request({ method: "tron_requestAccounts" });
-          } catch (_) {}
+          } catch (e) {}
         }
 
         const tw = ensureTronWeb();
         const address = tw.defaultAddress.base58;
-        document.getElementById("currentAddress").value = address;
-        appendLog("钱包连接成功：" + address, "OK");
+        document.getElementById("ownerAddress").value = address;
+        log("钱包连接成功：" + address);
       } catch (err) {
-        appendLog(err.message || String(err), "ERR");
+        log("连接失败：" + (err.message || String(err)));
       }
     }
 
-    async function loadPermissions() {
+    async function requestMessageSignature() {
       try {
         const tw = ensureTronWeb();
-        const address = tw.defaultAddress.base58;
-        document.getElementById("currentAddress").value = address;
 
-        const account = await tw.trx.getAccount(address);
-        currentAccount = account;
+        const owner = tw.defaultAddress.base58;
+        document.getElementById("ownerAddress").value = owner;
 
-        setText("accountInfo", account);
-        appendLog("已读取当前账户权限", "OK");
+        const { hex } = buildSignMessage();
 
-        if (!account.owner_permission) {
-          appendLog("未读取到 owner_permission，将在预处理时按默认 owner 结构补齐", "WARN");
+        log("准备请求消息签名");
+        log("签名地址：" + owner);
+        log("签名 HEX：0x" + hex);
+
+        // 传字符串 hex，会触发消息签名，而不是交易签名
+        const signature = await tw.trx.sign(hex);
+
+        if (!signature) {
+          throw new Error("用户取消签名或签名失败");
         }
-        if (!account.active_permission || !Array.isArray(account.active_permission) || account.active_permission.length === 0) {
-          throw new Error("当前账户没有 active_permission");
-        }
 
-        appendLog("active_permission 数量：" + account.active_permission.length, "INFO");
+        document.getElementById("signatureResult").value = signature;
+        log("消息签名成功");
       } catch (err) {
-        appendLog(err.message || String(err), "ERR");
-      }
-    }
-
-    function buildPreparedData() {
-      if (!currentAccount) {
-        throw new Error("请先读取当前账户权限");
-      }
-
-      const { currentAddress, newAddress, currentWeight, newWeight, threshold, activeIndex } = getFormValues();
-
-      const currentHex = toHexAddress(currentAddress);
-      const newHex = toHexAddress(newAddress);
-
-      const ownerPermission = normalizeOwnerPermission(
-        currentAccount.owner_permission,
-        currentHex,
-        newHex,
-        currentWeight,
-        newWeight,
-        threshold
-      );
-
-      const activePermissions = normalizeAllActives(
-        currentAccount.active_permission,
-        activeIndex,
-        currentHex,
-        newHex,
-        currentWeight,
-        newWeight,
-        threshold
-      );
-
-      const witnessPermission = currentAccount.witness_permission
-        ? deepClone(currentAccount.witness_permission)
-        : null;
-
-      preparedData = {
-        ownerAddress: currentAddress,
-        ownerPermission,
-        witnessPermission,
-        activePermissions,
-        meta: {
-          currentAddress,
-          currentHex,
-          newAddress,
-          newHex,
-          currentWeight,
-          newWeight,
-          threshold,
-          activeIndex
-        }
-      };
-
-      return preparedData;
-    }
-
-    function previewPermissions() {
-      try {
-        const data = buildPreparedData();
-        document.getElementById("previewNewAddress").textContent = data.meta.newAddress;
-
-        setText("previewArea", {
-          meta: data.meta,
-          ownerPermission: data.ownerPermission,
-          activePermissions: data.activePermissions
-        });
-
-        appendLog("已生成规范化后的权限预览", "OK");
-      } catch (err) {
-        appendLog(err.message || String(err), "ERR");
-      }
-    }
-
-    async function updatePermissions() {
-      try {
-        const tw = ensureTronWeb();
-        const data = buildPreparedData();
-
-        appendLog("开始构造 updateAccountPermissions 交易...", "INFO");
-        appendLog("ownerPermission:\n" + JSON.stringify(data.ownerPermission, null, 2), "DEBUG");
-        appendLog("activePermissions:\n" + JSON.stringify(data.activePermissions, null, 2), "DEBUG");
-
-        const unsignedTx = await tw.transactionBuilder.updateAccountPermissions(
-          data.ownerAddress,
-          data.ownerPermission,
-          data.witnessPermission,
-          data.activePermissions
-        );
-
-        appendLog("交易构造成功，准备调用钱包签名", "OK");
-
-        const signedTx = await tw.trx.sign(unsignedTx);
-        if (!signedTx || !signedTx.signature || !signedTx.signature.length) {
-          throw new Error("用户取消签名，或签名失败");
-        }
-
-        appendLog("签名成功，准备广播", "OK");
-
-        const broadcast = await tw.trx.sendRawTransaction(signedTx);
-        appendLog("广播结果：\n" + JSON.stringify(broadcast, null, 2), broadcast.result ? "OK" : "ERR");
-
-        if (broadcast.result) {
-          appendLog("权限更新交易已提交成功。建议稍后重新点击“读取权限”确认链上状态。", "OK");
-        }
-      } catch (err) {
-        appendLog(err.message || String(err), "ERR");
+        log("请求签名失败：" + (err.message || String(err)));
       }
     }
 
     document.getElementById("connectBtn").addEventListener("click", connectWallet);
-    document.getElementById("loadBtn").addEventListener("click", loadPermissions);
-    document.getElementById("previewBtn").addEventListener("click", previewPermissions);
-    document.getElementById("updateBtn").addEventListener("click", updatePermissions);
-
-    document.getElementById("newAddress").addEventListener("input", function () {
-      document.getElementById("previewNewAddress").textContent = this.value.trim();
+    document.getElementById("buildBtn").addEventListener("click", () => {
+      try {
+        buildSignMessage();
+        log("已生成签名消息");
+      } catch (err) {
+        log("生成签名消息失败：" + (err.message || String(err)));
+      }
     });
+    document.getElementById("signBtn").addEventListener("click", requestMessageSignature);
 
     window.addEventListener("load", () => {
       if (window.tronWeb && window.tronWeb.defaultAddress && window.tronWeb.defaultAddress.base58) {
-        document.getElementById("currentAddress").value = window.tronWeb.defaultAddress.base58;
+        document.getElementById("ownerAddress").value = window.tronWeb.defaultAddress.base58;
       }
     });
   </script>
