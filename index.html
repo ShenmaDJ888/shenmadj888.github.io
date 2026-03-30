@@ -3,509 +3,516 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-  <title>TRON 多签管理</title>
+  <title>TRON 多签管理 - 消息签名</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * { box-sizing: border-box; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #0d1117;
-      color: #e6edf3;
-      min-height: 100vh;
+      margin: 0;
+      background: #0b0f14;
+      color: #eaf1fb;
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+    .app {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 18px;
+    }
+    .nav {
       display: flex;
-      flex-direction: column;
       align-items: center;
-      padding: 20px 14px 40px;
+      justify-content: center;
+      height: 56px;
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 10px;
     }
-    .header { text-align: center; margin-bottom: 20px; }
-    .header-icon { font-size: 36px; margin-bottom: 6px; }
-    .header h1 {
-      font-size: 22px; font-weight: 800;
-      background: linear-gradient(135deg, #e84142, #ff8c42);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    }
-    .header p { font-size: 13px; color: #8b949e; margin-top: 4px; }
-
     .card {
-      background: #161b22;
-      border: 1px solid #30363d;
+      background: #111821;
+      border: 1px solid #1f2c3f;
       border-radius: 18px;
-      padding: 20px;
-      width: 100%;
-      max-width: 460px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.2);
+    }
+    .title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: #eef5ff;
+    }
+    .desc {
+      font-size: 14px;
+      color: #a6b5ca;
+      line-height: 1.8;
+    }
+    .warn {
+      margin-top: 12px;
+      background: rgba(255, 180, 0, 0.12);
+      border: 1px solid rgba(255, 180, 0, 0.28);
+      color: #ffcc66;
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+    .field {
       margin-bottom: 14px;
     }
-    .card-label {
-      font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
-      text-transform: uppercase; color: #8b949e; margin-bottom: 14px;
+    .label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      color: #dce7f7;
+      font-weight: 700;
     }
-
-    .status-bar {
-      display: flex; align-items: center; gap: 8px;
-      padding: 10px 14px; border-radius: 10px; font-size: 13px;
-      margin-bottom: 14px;
-    }
-    .status-bar.off  { background:#1c2128; color:#8b949e; }
-    .status-bar.on   { background:#0d2818; border:1px solid #1a4731; color:#3fb950; }
-    .status-bar.err  { background:#2d1117; border:1px solid #5c2323; color:#f85149; }
-    .dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
-    .dot.gray  { background:#484f58; }
-    .dot.green { background:#3fb950; }
-    .dot.red   { background:#f85149; }
-
-    .wallet-grid { display: flex; flex-direction: column; gap: 10px; }
-    .wallet-btn {
-      display: flex; align-items: center; gap: 14px;
-      padding: 14px 16px;
-      background: #0d1117;
-      border: 1.5px solid #30363d;
-      border-radius: 14px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .wallet-btn:hover { border-color: #e84142; background: #161b22; }
-    .wallet-btn:active { transform: scale(0.98); }
-    .wallet-btn.active { border-color: #3fb950; background: #0d2818; }
-    .wlogo-wrap {
-      width:44px; height:44px; border-radius:12px; flex-shrink:0;
-      display:flex; align-items:center; justify-content:center; font-size:22px;
-    }
-    .wlogo-tl { background: linear-gradient(135deg,#e84142,#ff6b6b); }
-    .wlogo-tp { background: linear-gradient(135deg,#2775CA,#54a0ff); }
-    .wlogo-im { background: linear-gradient(135deg,#11C4D1,#00b894); }
-    .winfo { flex: 1; }
-    .wname { font-size: 15px; font-weight: 700; color: #e6edf3; }
-    .wdesc { font-size: 12px; color: #8b949e; margin-top: 2px; }
-    .wbadge {
-      font-size: 11px; padding: 3px 10px; border-radius: 20px;
-      background: #21262d; color: #8b949e; font-weight: 600; white-space:nowrap;
-    }
-    .wallet-btn.active .wbadge { background: #1a4731; color: #3fb950; }
-
-    .field { margin-bottom: 14px; }
-    .field label { display:block; font-size:12px; color:#8b949e; margin-bottom:5px; font-weight:500; }
-    .field input, .field select {
+    input, textarea, select {
       width: 100%;
-      background: #0d1117;
-      border: 1.5px solid #30363d;
-      border-radius: 10px;
-      padding: 11px 13px;
-      color: #e6edf3;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid #243145;
+      background: #0d131b;
+      color: #eef4ff;
       font-size: 14px;
       outline: none;
-      transition: border-color 0.2s;
-      -webkit-appearance: none;
     }
-    .field input:focus, .field select:focus { border-color: #e84142; }
-    .field input::placeholder { color: #484f58; }
-    .field input[readonly] { color: #8b949e; }
-    .row2 { display: flex; gap: 10px; }
-    .row2 .field { flex: 1; }
-
-    /* 签名内容展示框 */
-    .sign-payload {
-      background:#0d1117; border:1.5px solid #30363d; border-radius:10px;
-      padding:13px; font-size:12px; font-family:'SF Mono','Fira Code',monospace;
-      color:#79c0ff; word-break:break-all; line-height:1.7;
-      margin-bottom:14px; min-height:60px;
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+      white-space: pre-wrap;
+      word-break: break-all;
+      line-height: 1.7;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     }
-    .sign-payload .label { color:#8b949e; font-size:11px; margin-bottom:4px; }
-
-    .info { background:#161b22; border:1px solid #21262d; border-radius:10px; padding:11px 13px; font-size:12px; color:#8b949e; line-height:1.6; margin-bottom:14px; }
-    .info strong { color:#e6edf3; }
-
-    .btn {
-      width:100%; padding:14px; border-radius:12px; border:none;
-      font-size:15px; font-weight:700; cursor:pointer;
-      transition: all 0.2s; margin-bottom:8px; display:block;
+    input[readonly], textarea[readonly] {
+      background: #0f1620;
+      color: #bdd0ea;
     }
-    .btn:last-child { margin-bottom:0; }
-    .btn-red  { background: linear-gradient(135deg,#e84142,#c0392b); color:#fff; }
-    .btn-gray { background:#21262d; border:1.5px solid #30363d; color:#e6edf3; }
-    .btn:hover:not(:disabled) { opacity:.88; transform:translateY(-1px); }
-    .btn:disabled { opacity:.35; cursor:not-allowed; transform:none; }
-
-    .result {
-      border-radius:10px; padding:13px; font-size:12px;
-      word-break:break-all; line-height:1.7; display:none;
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
     }
-    .result.show { display:block; }
-    .result.ok  { background:#0d2818; border:1px solid #1a4731; color:#3fb950; }
-    .result.bad { background:#2d1117; border:1px solid #5c2323; color:#f85149; }
-
-    .steps { display:flex; gap:5px; margin-bottom:18px; }
-    .st { flex:1; height:3px; border-radius:2px; background:#21262d; transition:background .3s; }
-    .st.active { background:#e84142; }
-    .st.done   { background:#3fb950; }
-
-    /* 签名结果展示 */
-    .sig-box {
-      background:#0d1117; border:1px solid #21262d; border-radius:10px;
-      padding:13px; font-size:11px; font-family:'SF Mono','Fira Code',monospace;
-      color:#3fb950; word-break:break-all; line-height:1.6; margin-top:12px;
+    @media (max-width: 720px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
     }
-    .sig-box .sig-label { color:#8b949e; font-size:11px; margin-bottom:4px; display:block; }
-
-    hr { border:none; border-top:1px solid #21262d; margin:14px 0; }
+    .btns {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 8px;
+    }
+    button {
+      border: none;
+      border-radius: 14px;
+      padding: 12px 18px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .btn-primary {
+      background: #2f7cff;
+      color: #fff;
+    }
+    .btn-secondary {
+      background: #1c2735;
+      color: #eef4ff;
+      border: 1px solid #2a3b51;
+    }
+    .btn-danger {
+      background: #eb5c53;
+      color: #fff;
+    }
+    .pill {
+      display: inline-block;
+      padding: 4px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: 999px;
+      margin-right: 8px;
+      margin-bottom: 8px;
+      border: 1px solid #2a3b51;
+      background: #142031;
+      color: #8eb8ff;
+    }
+    .preview {
+      background: #0d131b;
+      border: 1px solid #243145;
+      border-radius: 12px;
+      padding: 14px;
+      line-height: 1.8;
+      color: #dce7f7;
+      word-break: break-all;
+    }
+    .small {
+      margin-top: 6px;
+      font-size: 12px;
+      line-height: 1.6;
+      color: #8ea0b8;
+    }
   </style>
 </head>
 <body>
+  <div class="app">
+    <div class="nav">TRON 多签管理</div>
 
-<div class="header">
-  <div class="header-icon">🔐</div>
-  <h1>TRON 多签管理</h1>
-  <p>消息签名授权 · 触发「请求签名」弹窗</p>
-</div>
-
-<!-- 状态 + 步骤条 -->
-<div class="card" style="padding:14px 20px">
-  <div id="statusBar" class="status-bar off">
-    <div class="dot gray" id="statusDot"></div>
-    <span id="statusText">请选择钱包连接</span>
-  </div>
-  <div class="steps">
-    <div class="st active" id="s1"></div>
-    <div class="st" id="s2"></div>
-    <div class="st" id="s3"></div>
-  </div>
-</div>
-
-<!-- Step 1: 选择钱包 -->
-<div class="card" id="cardWallet">
-  <div class="card-label">步骤 1 — 选择钱包</div>
-  <div class="wallet-grid">
-
-    <div class="wallet-btn" id="btn-tronlink" onclick="connectWallet('tronlink')">
-      <div class="wlogo-wrap wlogo-tl">🔴</div>
-      <div class="winfo">
-        <div class="wname">TronLink</div>
-        <div class="wdesc">官方 TRON 钱包 · 插件 / App 内浏览器</div>
+    <div class="card">
+      <div class="title">步骤 1 - 连接钱包</div>
+      <div class="desc">
+        这份页面走的是<strong>消息签名</strong>，用于让钱包弹出“请求签名 / 在网站上签名”。<br />
+        不会直接发起“升级账户权限”交易，也不会立即修改链上多签配置。
       </div>
-      <div class="wbadge" id="badge-tronlink">连接</div>
-    </div>
-
-    <div class="wallet-btn" id="btn-tokenpocket" onclick="connectWallet('tokenpocket')">
-      <div class="wlogo-wrap wlogo-tp">🔵</div>
-      <div class="winfo">
-        <div class="wname">TokenPocket</div>
-        <div class="wdesc">多链钱包 · App 内置 DApp 浏览器</div>
+      <div class="warn">
+        此操作不会上链，只是对一段多签说明文本进行签名确认。<br />
+        如果你后面要真正把共同签名地址写进链上权限，仍然需要再单独发起权限更新交易。
       </div>
-      <div class="wbadge" id="badge-tokenpocket">连接</div>
-    </div>
 
-    <div class="wallet-btn" id="btn-imtoken" onclick="connectWallet('imtoken')">
-      <div class="wlogo-wrap wlogo-im">🟢</div>
-      <div class="winfo">
-        <div class="wname">imToken</div>
-        <div class="wdesc">自托管钱包 · App 内置 DApp 浏览器</div>
+      <div style="margin-top: 14px;">
+        <span class="pill">TronLink</span>
+        <span class="pill">TokenPocket</span>
+        <span class="pill">imToken</span>
       </div>
-      <div class="wbadge" id="badge-imtoken">连接</div>
+
+      <div class="field" style="margin-top: 14px;">
+        <label class="label">当前检测到的钱包环境</label>
+        <input id="walletEnv" readonly placeholder="未检测到" />
+      </div>
+
+      <div class="field">
+        <label class="label">当前主账户（Owner）</label>
+        <input id="ownerAddress" readonly placeholder="请先连接钱包" />
+      </div>
+
+      <div class="btns">
+        <button class="btn-primary" id="detectBtn">检测钱包</button>
+        <button class="btn-secondary" id="connectBtn">连接钱包</button>
+      </div>
+      <div class="small">
+        建议在钱包内置 DApp 浏览器中打开本页。桌面端若走 imToken，官方文档提到的是 WalletConnect 连接方式。
+      </div>
     </div>
 
-  </div>
-  <div id="connectErr" class="result bad" style="margin-top:12px"></div>
-</div>
+    <div class="card">
+      <div class="title">步骤 2 - 配置多签参数</div>
 
-<!-- Step 2: 填写参数 + 消息签名 -->
-<div class="card" id="cardConfig" style="display:none">
-  <div class="card-label">步骤 2 — 填写多签参数</div>
+      <div class="warn">
+        ⚠️ 此操作不可逆说明只体现在你要签名的文本内容里。<br />
+        这一步本身不会升级账户权限，只是生成“我同意增加共同签名地址”的签名证明。
+      </div>
 
-  <div class="field">
-    <label>当前主账户（Owner）</label>
-    <input type="text" id="ownerAddr" readonly />
-  </div>
+      <div class="grid" style="margin-top: 14px;">
+        <div>
+          <div class="field">
+            <label class="label">当前主账户（Owner）</label>
+            <input id="ownerAddressMirror" readonly />
+          </div>
 
-  <div class="field">
-    <label>要添加的共签钱包地址</label>
-    <input type="text" id="newSigner" placeholder="T... (TRON 地址，34位)" oninput="onParamChange()" />
-  </div>
+          <div class="field">
+            <label class="label">要增加的共同签名地址</label>
+            <input id="newSigner" value="TJfe4EZzNm5oomMNUwLd1kCgwwoJokFwGN" />
+          </div>
 
-  <div class="row2">
-    <div class="field">
-      <label>签名门槛 (Threshold)</label>
-      <select id="threshold" onchange="onParamChange()">
-        <option value="1">1 — 任一签名者可操作</option>
-        <option value="2">2 — 双方必须共同签名</option>
-      </select>
+          <div class="field">
+            <label class="label">权限类型</label>
+            <select id="permissionType">
+              <option value="owner">owner</option>
+              <option value="active" selected>active</option>
+              <option value="owner+active">owner + active</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <div class="field">
+            <label class="label">阈值（threshold）</label>
+            <input id="threshold" type="number" value="2" min="1" />
+          </div>
+
+          <div class="field">
+            <label class="label">当前主账户权重</label>
+            <input id="ownerWeight" type="number" value="1" min="1" />
+          </div>
+
+          <div class="field">
+            <label class="label">新增地址权重</label>
+            <input id="newWeight" type="number" value="1" min="1" />
+          </div>
+        </div>
+      </div>
+
+      <div class="btns">
+        <button class="btn-secondary" id="buildBtn">生成签名消息</button>
+        <button class="btn-danger" id="signBtn">请求签名</button>
+      </div>
     </div>
-    <div class="field">
-      <label>新签名者权重</label>
-      <select id="weight" onchange="onParamChange()">
-        <option value="1">1（标准）</option>
-        <option value="2">2（高权重）</option>
-      </select>
+
+    <div class="card">
+      <div class="title">步骤 3 - 签名预览</div>
+
+      <div class="field">
+        <label class="label">人类可读签名内容</label>
+        <div id="messagePreview" class="preview">点击“生成签名消息”后显示</div>
+      </div>
+
+      <div class="field">
+        <label class="label">签名消息 HEX</label>
+        <textarea id="messageHex" readonly placeholder="这里显示传给钱包的消息 hex"></textarea>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="title">步骤 4 - 签名结果</div>
+
+      <div class="field">
+        <label class="label">签名值</label>
+        <textarea id="signatureResult" readonly placeholder="签名完成后显示"></textarea>
+      </div>
+
+      <div class="field">
+        <label class="label">运行日志</label>
+        <textarea id="logs" readonly placeholder="运行日志"></textarea>
+      </div>
     </div>
   </div>
 
-  <div class="field">
-    <label>权限类型</label>
-    <select id="permType" onchange="onParamChange()">
-      <option value="active">Active（推荐 — Owner 权限独占不变）</option>
-      <option value="owner">Owner（最高权限 — 谨慎！）</option>
-    </select>
-  </div>
+  <script>
+    let currentProvider = null;
+    let currentTronWeb = null;
+    let currentWalletName = "未知";
 
-  <hr/>
-
-  <!-- 将要签名的内容预览（即钱包弹窗里显示的那段 hex） -->
-  <div class="card-label" style="margin-bottom:8px">签名内容预览（钱包弹窗将显示此内容）</div>
-  <div class="sign-payload" id="signPayload">
-    <div class="label">签名内容 (hex)</div>
-    <span id="payloadHex">填写共签地址后自动生成...</span>
-  </div>
-
-  <div class="info">
-    ℹ️ 点击下方按钮后，钱包将弹出 <strong>「请求签名」</strong> 界面，显示上方 hex 内容，确认即可。<br/>
-    签名本身不消耗 TRX，不会直接上链。签名结果将用于后续提交多签授权。
-  </div>
-
-  <button class="btn btn-red" id="btnSign" onclick="doSign()" disabled>
-    ✍️ 发起签名请求
-  </button>
-</div>
-
-<!-- Step 3: 签名结果 + 提交上链 -->
-<div class="card" id="cardResult" style="display:none">
-  <div class="card-label">步骤 3 — 签名结果</div>
-
-  <div class="info">签名成功！下方是签名结果。可直接点击「提交多签授权」将权限变更上链。</div>
-
-  <div class="sig-box" id="sigBox">
-    <span class="sig-label">签名地址</span>
-    <span id="sigAddr">-</span>
-    <br/><br/>
-    <span class="sig-label">签名内容 (hex)</span>
-    <span id="sigPayload">-</span>
-    <br/><br/>
-    <span class="sig-label">签名结果 (signature)</span>
-    <span id="sigValue">-</span>
-  </div>
-
-  <div style="margin-top:14px">
-    <button class="btn btn-red" id="btnSubmit" onclick="submitOnChain()">
-      🚀 提交多签授权（上链）
-    </button>
-    <button class="btn btn-gray" onclick="backToConfig()">← 返回修改</button>
-  </div>
-
-  <div id="submitResult" class="result" style="margin-top:12px"></div>
-</div>
-
-<script>
-  let tronWeb = null;
-  let currentAddress = '';
-  let lastPayloadHex = '';
-  let lastParams = {};
-
-  /* ── UI 工具 ── */
-  function setStatus(type, text) {
-    document.getElementById('statusBar').className = 'status-bar ' + type;
-    document.getElementById('statusDot').className = 'dot ' +
-      (type === 'on' ? 'green' : type === 'err' ? 'red' : 'gray');
-    document.getElementById('statusText').textContent = text;
-  }
-  function setStep(n) {
-    ['s1','s2','s3'].forEach((id, i) => {
-      document.getElementById(id).className = 'st ' +
-        (i+1 < n ? 'done' : i+1 === n ? 'active' : '');
-    });
-  }
-  function isTron(addr) { return /^T[A-Za-z0-9]{33}$/.test(addr); }
-  function showConnectErr(msg) {
-    const el = document.getElementById('connectErr');
-    el.textContent = msg; el.className = 'result bad show';
-  }
-
-  /* ── 生成签名 payload（对多签参数做哈希，得到一段 hex） ── */
-  async function buildPayloadHex(owner, newSigner, threshold, weight, permType) {
-    const raw = JSON.stringify({
-      action: 'add_multisig',
-      owner, newSigner, threshold, weight, permType,
-      timestamp: Math.floor(Date.now() / 1000)
-    });
-    // 用 SHA-256 哈希生成 32 字节 hex（与图1/图2里的格式一致）
-    const buf = new TextEncoder().encode(raw);
-    const hashBuf = await crypto.subtle.digest('SHA-256', buf);
-    const hex = '0x' + Array.from(new Uint8Array(hashBuf))
-      .map(b => b.toString(16).padStart(2,'0')).join('');
-    return { hex, raw };
-  }
-
-  /* ── 参数变化时更新 payload 预览 ── */
-  async function onParamChange() {
-    const newAddr   = document.getElementById('newSigner').value.trim();
-    const threshold = parseInt(document.getElementById('threshold').value);
-    const weight    = parseInt(document.getElementById('weight').value);
-    const permType  = document.getElementById('permType').value;
-    const valid     = isTron(newAddr) && newAddr !== currentAddress;
-    document.getElementById('btnSign').disabled = !valid;
-
-    if (valid) {
-      const { hex } = await buildPayloadHex(currentAddress, newAddr, threshold, weight, permType);
-      document.getElementById('payloadHex').textContent = hex;
-      lastPayloadHex = hex;
-      lastParams = { newAddr, threshold, weight, permType };
-    } else {
-      document.getElementById('payloadHex').textContent = '填写有效的共签地址后自动生成...';
-      lastPayloadHex = '';
+    function log(msg) {
+      const el = document.getElementById("logs");
+      const t = new Date().toLocaleTimeString();
+      el.value += `[${t}] ${msg}\n`;
+      el.scrollTop = el.scrollHeight;
     }
-  }
 
-  /* ── 连接钱包 ── */
-  async function connectWallet(type) {
-    ['tronlink','tokenpocket','imtoken'].forEach(t => {
-      document.getElementById('btn-' + t).classList.remove('active');
-      document.getElementById('badge-' + t).textContent = '连接';
-    });
-    document.getElementById('connectErr').className = 'result bad';
-    setStatus('off', '连接中...');
+    function setOwnerAddress(addr) {
+      document.getElementById("ownerAddress").value = addr || "";
+      document.getElementById("ownerAddressMirror").value = addr || "";
+    }
 
-    try {
-      let tw = null;
+    function utf8ToHex(str) {
+      const bytes = new TextEncoder().encode(str);
+      return Array.from(bytes).map(b => b.toString(16).padStart(2, "0")).join("");
+    }
 
-      if (type === 'tronlink') {
-        if (typeof window.tronLink !== 'undefined') {
-          try { await window.tronLink.request({ method: 'tron_requestAccounts' }); } catch(e) {}
-          tw = window.tronWeb;
-        } else if (typeof window.tronWeb !== 'undefined') {
-          tw = window.tronWeb;
-        } else {
-          showConnectErr('❌ 未检测到 TronLink。请在 TronLink App 内置浏览器中打开，或安装插件后刷新。');
-          setStatus('off','未连接'); return;
+    function isPositiveInt(v, name) {
+      const n = Number(v);
+      if (!Number.isInteger(n) || n <= 0) {
+        throw new Error(name + " 必须是大于 0 的整数");
+      }
+      return n;
+    }
+
+    function detectWalletEnvironment() {
+      // 1. TokenPocket 优先单独识别
+      if (window.tokenpocket && window.tokenpocket.tron) {
+        currentWalletName = "TokenPocket";
+        currentProvider = window.tokenpocket.tron;
+        currentTronWeb = window.tokenpocket.tronWeb || window.tronWeb || null;
+        return {
+          wallet: currentWalletName,
+          provider: currentProvider,
+          tronWeb: currentTronWeb
+        };
+      }
+
+      // 2. TronLink
+      if (window.tronLink || (window.tronWeb && window.tronWeb.defaultAddress)) {
+        currentWalletName = "TronLink";
+        currentProvider = window.tronLink || null;
+        currentTronWeb = window.tronWeb || null;
+        return {
+          wallet: currentWalletName,
+          provider: currentProvider,
+          tronWeb: currentTronWeb
+        };
+      }
+
+      // 3. imToken：这里采用 DApp 浏览器内 tronWeb 注入的兼容方式
+      if ((window.imToken && window.tronWeb) || (navigator.userAgent.toLowerCase().includes("imtoken") && window.tronWeb)) {
+        currentWalletName = "imToken";
+        currentProvider = window.imToken || null;
+        currentTronWeb = window.tronWeb || null;
+        return {
+          wallet: currentWalletName,
+          provider: currentProvider,
+          tronWeb: currentTronWeb
+        };
+      }
+
+      // 4. 其它 tronWeb 注入环境
+      if (window.tronWeb) {
+        currentWalletName = "tronWeb 注入环境";
+        currentProvider = null;
+        currentTronWeb = window.tronWeb;
+        return {
+          wallet: currentWalletName,
+          provider: currentProvider,
+          tronWeb: currentTronWeb
+        };
+      }
+
+      currentWalletName = "未检测到";
+      currentProvider = null;
+      currentTronWeb = null;
+      return {
+        wallet: currentWalletName,
+        provider: null,
+        tronWeb: null
+      };
+    }
+
+    function ensureTronWebReady() {
+      if (!currentTronWeb) {
+        throw new Error("未检测到可用的 tronWeb，请在 TronLink / TP / imToken 的 DApp 浏览器中打开");
+      }
+      return currentTronWeb;
+    }
+
+    async function connectWallet() {
+      const env = detectWalletEnvironment();
+      document.getElementById("walletEnv").value = env.wallet;
+
+      try {
+        // TokenPocket
+        if (env.wallet === "TokenPocket" && window.tokenpocket && window.tokenpocket.tron && window.tokenpocket.tron.request) {
+          const accounts = await window.tokenpocket.tron.request({ method: "eth_requestAccounts" });
+          const addr = Array.isArray(accounts) ? accounts[0] : (currentTronWeb?.defaultAddress?.base58 || "");
+          currentTronWeb = window.tokenpocket.tronWeb || window.tronWeb || currentTronWeb;
+          setOwnerAddress(addr || (currentTronWeb?.defaultAddress?.base58 || ""));
+          log("TokenPocket 连接成功：" + (addr || currentTronWeb?.defaultAddress?.base58 || "未知地址"));
+          return;
         }
-      }
-      else if (type === 'tokenpocket') {
-        if (typeof window.tokenpocket !== 'undefined' && window.tokenpocket.tron) {
-          try { await window.tokenpocket.tron.request({ method: 'tron_requestAccounts' }); } catch(e) {}
-          tw = window.tronWeb;
-        } else if (typeof window.tronWeb !== 'undefined') {
-          tw = window.tronWeb;
-        } else {
-          showConnectErr('❌ 未检测到 TokenPocket。请在 TokenPocket App 内置浏览器中打开，切换到 TRON 网络。');
-          setStatus('off','未连接'); return;
+
+        // TronLink
+        if (window.tronLink && typeof window.tronLink.request === "function") {
+          const res = await window.tronLink.request({ method: "tron_requestAccounts" });
+          currentTronWeb = window.tronWeb || currentTronWeb;
+          const addr = currentTronWeb?.defaultAddress?.base58 || "";
+          setOwnerAddress(addr);
+          log("TronLink 连接成功：" + addr);
+          return;
         }
-      }
-      else if (type === 'imtoken') {
-        if (typeof window.imToken !== 'undefined') {
-          try {
-            await new Promise((resolve, reject) => {
-              window.imToken.callAPI('navigator.getAccount', { chainType: 'TRON' },
-                (err, res) => { if (err) reject(err); else resolve(res); });
-            });
-          } catch(e) {}
-          tw = window.tronWeb;
-        } else if (typeof window.tronWeb !== 'undefined') {
-          tw = window.tronWeb;
-        } else {
-          showConnectErr('❌ 未检测到 imToken。请在 imToken App 内置浏览器中打开，选择 TRON 账户。');
-          setStatus('off','未连接'); return;
+
+        // imToken / 其它 tronWeb 注入环境
+        currentTronWeb = window.tronWeb || currentTronWeb;
+        const addr = currentTronWeb?.defaultAddress?.base58 || "";
+        if (!addr) {
+          throw new Error("检测到 tronWeb，但未获取到地址，请确认钱包已授权当前 DApp");
         }
+        setOwnerAddress(addr);
+        log(env.wallet + " 连接成功：" + addr);
+      } catch (err) {
+        log("连接失败：" + (err.message || String(err)));
       }
-
-      if (!tw || !tw.defaultAddress || !tw.defaultAddress.base58) {
-        showConnectErr('❌ 钱包未解锁或拒绝授权，请在钱包弹窗中确认后重试。');
-        setStatus('err','授权失败'); return;
-      }
-
-      tronWeb = tw;
-      currentAddress = tw.defaultAddress.base58;
-      const names = { tronlink:'TronLink', tokenpocket:'TokenPocket', imtoken:'imToken' };
-      setStatus('on', names[type] + '：' + currentAddress.slice(0,8) + '...' + currentAddress.slice(-6));
-      document.getElementById('btn-' + type).classList.add('active');
-      document.getElementById('badge-' + type).textContent = '✓ 已连接';
-      document.getElementById('ownerAddr').value = currentAddress;
-      document.getElementById('cardConfig').style.display = 'block';
-      setStep(2);
-      document.getElementById('cardConfig').scrollIntoView({ behavior: 'smooth' });
-
-    } catch(e) {
-      showConnectErr('❌ 连接失败：' + (e.message || e));
-      setStatus('err','连接失败');
-    }
-  }
-
-  /* ── 消息签名（触发「请求签名」弹窗，而非交易弹窗） ── */
-  async function doSign() {
-    if (!lastPayloadHex) { alert('请先填写共签地址'); return; }
-
-    const btn = document.getElementById('btnSign');
-    btn.disabled = true;
-    btn.textContent = '⏳ 请在钱包中确认签名...';
-
-    try {
-      // ★ 关键：传入 hex 字符串而非交易对象
-      //   → 钱包弹出「请求签名」界面（如图1/图2），而非「升级账号权限」交易弹窗
-      const signature = await tronWeb.trx.sign(lastPayloadHex);
-
-      // 显示签名结果
-      document.getElementById('sigAddr').textContent    = currentAddress;
-      document.getElementById('sigPayload').textContent = lastPayloadHex;
-      document.getElementById('sigValue').textContent   = signature;
-
-      document.getElementById('cardResult').style.display = 'block';
-      setStep(3);
-      document.getElementById('cardResult').scrollIntoView({ behavior: 'smooth' });
-
-    } catch(e) {
-      alert('签名失败或用户取消：' + (e.message || e));
     }
 
-    btn.disabled = false;
-    btn.textContent = '✍️ 发起签名请求';
-  }
+    function buildMessage() {
+      const tw = ensureTronWebReady();
 
-  /* ── 提交上链（updateAccountPermissions 真正改权限） ── */
-  async function submitOnChain() {
-    const { newAddr, threshold, weight, permType } = lastParams;
-    const btnSub = document.getElementById('btnSubmit');
-    const resEl  = document.getElementById('submitResult');
+      const owner = tw.defaultAddress?.base58 || document.getElementById("ownerAddress").value.trim();
+      const newSigner = document.getElementById("newSigner").value.trim();
+      const permissionType = document.getElementById("permissionType").value;
+      const threshold = isPositiveInt(document.getElementById("threshold").value, "threshold");
+      const ownerWeight = isPositiveInt(document.getElementById("ownerWeight").value, "当前主账户权重");
+      const newWeight = isPositiveInt(document.getElementById("newWeight").value, "新增地址权重");
 
-    btnSub.disabled = true;
-    btnSub.textContent = '⏳ 提交中，请在钱包确认交易...';
-    resEl.className = 'result';
-
-    try {
-      const ownerKey = { address: currentAddress, weight: 1 };
-      const newKey   = { address: newAddr, weight: weight };
-      const ops = '7fff1fc0037e0000000000000000000000000000000000000000000000000000';
-
-      let ownerPerm, activePerm;
-      if (permType === 'active') {
-        ownerPerm  = { type:0, permission_name:'owner',  threshold:1, keys:[ownerKey] };
-        activePerm = [{ type:2, permission_name:'active', threshold:threshold, operations:ops, keys:[ownerKey, newKey] }];
-      } else {
-        ownerPerm  = { type:0, permission_name:'owner',  threshold:threshold, keys:[ownerKey, newKey] };
-        activePerm = [{ type:2, permission_name:'active', threshold:threshold, operations:ops, keys:[ownerKey, newKey] }];
+      if (!owner) {
+        throw new Error("当前主账户为空，请先连接钱包");
+      }
+      if (!tw.isAddress(newSigner)) {
+        throw new Error("新增地址不是合法的 TRON 地址");
       }
 
-      const tx     = await tronWeb.transactionBuilder.updateAccountPermissions(currentAddress, ownerPerm, null, activePerm);
-      const signed = await tronWeb.trx.sign(tx);
-      const result = await tronWeb.trx.sendRawTransaction(signed);
+      const ts = Date.now();
 
-      if (result && result.result) {
-        resEl.className = 'result show ok';
-        resEl.textContent =
-          '✅ 多签权限上链成功！\n\nTxID:\n' + result.txid +
-          '\n\n共签地址：' + newAddr +
-          '\n门槛：' + threshold + '   权重：' + weight +
-          '\n\nTronScan:\nhttps://tronscan.org/#/transaction/' + result.txid;
-        setStatus('on','✅ 多签设置完成');
-      } else {
-        resEl.className = 'result show bad';
-        resEl.textContent = '❌ 广播失败：' + JSON.stringify(result);
-      }
-    } catch(e) {
-      resEl.className = 'result show bad';
-      resEl.textContent = '❌ ' + (e.message || JSON.stringify(e));
+      const message = [
+        "TRON MULTISIG WEBSITE SIGNATURE",
+        `wallet=${currentWalletName}`,
+        `owner=${owner}`,
+        `new_signer=${newSigner}`,
+        `permission_type=${permissionType}`,
+        `owner_weight=${ownerWeight}`,
+        `new_signer_weight=${newWeight}`,
+        `threshold=${threshold}`,
+        "action=confirm_add_multisig_signer",
+        "network=tron",
+        `timestamp=${ts}`
+      ].join("\n");
+
+      const hex = utf8ToHex(message);
+
+      document.getElementById("messagePreview").textContent = message;
+      document.getElementById("messageHex").value = "0x" + hex;
+
+      return { message, hex };
     }
 
-    btnSub.disabled = false;
-    btnSub.textContent = '🚀 提交多签授权（上链）';
-  }
+    async function requestSignature() {
+      try {
+        const env = detectWalletEnvironment();
+        document.getElementById("walletEnv").value = env.wallet;
 
-  function backToConfig() {
-    document.getElementById('cardResult').style.display = 'none';
-    setStep(2);
-  }
-</script>
+        const tw = ensureTronWebReady();
+        const { message, hex } = buildMessage();
+
+        log("开始请求消息签名，钱包环境：" + env.wallet);
+
+        let sig = null;
+
+        // TokenPocket 优先走官方文档给出的 signMessageV2
+        if (env.wallet === "TokenPocket" && tw.trx && typeof tw.trx.signMessageV2 === "function") {
+          sig = await tw.trx.signMessageV2(message);
+          log("TokenPocket 使用 signMessageV2 签名");
+        } else {
+          // TronLink / imToken / 其它 tronWeb 注入环境
+          sig = await tw.trx.sign(hex);
+          log("使用 tronWeb.trx.sign(hex) 发起消息签名");
+        }
+
+        if (!sig) {
+          throw new Error("用户取消签名或签名失败");
+        }
+
+        document.getElementById("signatureResult").value = sig;
+        log("消息签名成功");
+      } catch (err) {
+        log("请求签名失败：" + (err.message || String(err)));
+      }
+    }
+
+    document.getElementById("detectBtn").addEventListener("click", () => {
+      const env = detectWalletEnvironment();
+      document.getElementById("walletEnv").value = env.wallet;
+      log("检测结果：" + env.wallet);
+      if (env.tronWeb && env.tronWeb.defaultAddress && env.tronWeb.defaultAddress.base58) {
+        setOwnerAddress(env.tronWeb.defaultAddress.base58);
+      }
+    });
+
+    document.getElementById("connectBtn").addEventListener("click", connectWallet);
+
+    document.getElementById("buildBtn").addEventListener("click", () => {
+      try {
+        buildMessage();
+        log("已生成签名消息");
+      } catch (err) {
+        log("生成签名消息失败：" + (err.message || String(err)));
+      }
+    });
+
+    document.getElementById("signBtn").addEventListener("click", requestSignature);
+
+    window.addEventListener("load", () => {
+      const env = detectWalletEnvironment();
+      document.getElementById("walletEnv").value = env.wallet;
+      if (env.tronWeb && env.tronWeb.defaultAddress && env.tronWeb.defaultAddress.base58) {
+        setOwnerAddress(env.tronWeb.defaultAddress.base58);
+      }
+    });
+  </script>
 </body>
 </html>
