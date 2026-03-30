@@ -1,264 +1,3 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0" />
-  <title>TRON 多签管理 - 调试版</title>
-  <style>
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{
-      font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-      background:#0d1117;color:#e6edf3;
-      min-height:100vh;display:flex;flex-direction:column;
-      align-items:center;padding:20px 14px 40px;
-    }
-    .hd{text-align:center;margin-bottom:20px}
-    .hd span{font-size:36px;display:block;margin-bottom:6px}
-    .hd h1{
-      font-size:22px;font-weight:800;
-      background:linear-gradient(135deg,#e84142,#ff8c42);
-      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-    }
-    .hd p{font-size:13px;color:#8b949e;margin-top:4px}
-
-    .card{
-      background:#161b22;border:1px solid #30363d;
-      border-radius:18px;padding:20px;
-      width:100%;max-width:520px;margin-bottom:14px;
-    }
-    .clabel{
-      font-size:11px;font-weight:700;letter-spacing:.08em;
-      text-transform:uppercase;color:#8b949e;margin-bottom:14px;
-    }
-
-    .sbar{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:10px;font-size:13px;margin-bottom:14px}
-    .sbar.off{background:#1c2128;color:#8b949e}
-    .sbar.on{background:#0d2818;border:1px solid #1a4731;color:#3fb950}
-    .sbar.err{background:#2d1117;border:1px solid #5c2323;color:#f85149}
-    .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-    .dot.g{background:#484f58}.dot.gr{background:#3fb950}.dot.r{background:#f85149}
-
-    .steps{display:flex;gap:5px;margin-bottom:18px}
-    .st{flex:1;height:3px;border-radius:2px;background:#21262d;transition:background .3s}
-    .st.active{background:#e84142}.st.done{background:#3fb950}
-
-    .wgrid{display:flex;flex-direction:column;gap:10px}
-    .wbtn{
-      display:flex;align-items:center;gap:14px;padding:14px 16px;
-      background:#0d1117;border:1.5px solid #30363d;border-radius:14px;
-      cursor:pointer;transition:all .2s;
-    }
-    .wbtn:hover{border-color:#e84142;background:#161b22}
-    .wbtn:active{transform:scale(.98)}
-    .wbtn.active{border-color:#3fb950;background:#0d2818}
-    .wico{width:44px;height:44px;border-radius:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:22px}
-    .c-tl{background:linear-gradient(135deg,#e84142,#ff6b6b)}
-    .c-tp{background:linear-gradient(135deg,#2775CA,#54a0ff)}
-    .c-im{background:linear-gradient(135deg,#11C4D1,#00b894)}
-    .wi{flex:1}
-    .wn{font-size:15px;font-weight:700;color:#e6edf3}
-    .wd{font-size:12px;color:#8b949e;margin-top:2px}
-    .wb{font-size:11px;padding:3px 10px;border-radius:20px;background:#21262d;color:#8b949e;font-weight:600;white-space:nowrap}
-    .wbtn.active .wb{background:#1a4731;color:#3fb950}
-
-    .field{margin-bottom:14px}
-    .field label{display:block;font-size:12px;color:#8b949e;margin-bottom:5px;font-weight:500}
-    .field input,.field select, .field textarea{
-      width:100%;background:#0d1117;border:1.5px solid #30363d;
-      border-radius:10px;padding:11px 13px;color:#e6edf3;font-size:14px;
-      outline:none;transition:border-color .2s;-webkit-appearance:none;
-    }
-    .field input:focus,.field select:focus,.field textarea:focus{border-color:#e84142}
-    .field input::placeholder,.field textarea::placeholder{color:#484f58}
-    .field input[readonly]{color:#8b949e}
-    .row2{display:flex;gap:10px}.row2 .field{flex:1}
-
-    .info{background:#161b22;border:1px solid #21262d;border-radius:10px;padding:11px 13px;font-size:12px;color:#8b949e;line-height:1.6;margin-bottom:14px}
-    .info strong{color:#e6edf3}
-    .warn{background:#2d1f00;border:1px solid #6e4c00;border-radius:10px;padding:11px 13px;font-size:12px;color:#d29922;line-height:1.6;margin-bottom:14px}
-
-    .txid-box{
-      background:#0d1117;border:1.5px solid #30363d;border-radius:10px;
-      padding:13px;margin-bottom:14px;
-    }
-    .txid-box .tl{font-size:11px;color:#8b949e;margin-bottom:6px}
-    .txid-box .tv{
-      font-size:12px;font-family:'SF Mono','Fira Code',monospace;
-      color:#79c0ff;word-break:break-all;line-height:1.6;
-    }
-
-    .btn{
-      width:100%;padding:14px;border-radius:12px;border:none;
-      font-size:15px;font-weight:700;cursor:pointer;
-      transition:all .2s;margin-bottom:8px;display:block;
-    }
-    .btn:last-child{margin-bottom:0}
-    .btn-red{background:linear-gradient(135deg,#e84142,#c0392b);color:#fff}
-    .btn-gray{background:#21262d;border:1.5px solid #30363d;color:#e6edf3}
-    .btn:hover:not(:disabled){opacity:.88;transform:translateY(-1px)}
-    .btn:disabled{opacity:.35;cursor:not-allowed;transform:none}
-
-    .result{
-      border-radius:10px;padding:13px;font-size:12px;
-      word-break:break-all;line-height:1.7;display:none;
-      white-space:pre-wrap;
-    }
-    .result.show{display:block}
-    .result.ok{background:#0d2818;border:1px solid #1a4731;color:#3fb950}
-    .result.bad{background:#2d1117;border:1px solid #5c2323;color:#f85149}
-
-    .debug{
-      background:#020617;
-      border:1px solid #30363d;
-      border-radius:12px;
-      padding:12px;
-      font-size:12px;
-      line-height:1.6;
-      white-space:pre-wrap;
-      color:#93c5fd;
-      max-height:320px;
-      overflow:auto;
-      font-family:Consolas,Monaco,monospace;
-    }
-
-    .mini{
-      font-size:12px;
-      color:#8b949e;
-      line-height:1.7;
-      word-break:break-all;
-    }
-  </style>
-</head>
-<body>
-
-<div class="hd">
-  <span>🔐</span>
-  <h1>TRON 多签管理</h1>
-  <p>调试增强版 · 定位钱包连接问题</p>
-</div>
-
-<div class="card" style="padding:14px 20px">
-  <div id="sbar" class="sbar off">
-    <div class="dot g" id="dot"></div>
-    <span id="stxt">请选择钱包连接</span>
-  </div>
-  <div class="steps">
-    <div class="st active" id="s1"></div>
-    <div class="st" id="s2"></div>
-    <div class="st" id="s3"></div>
-  </div>
-</div>
-
-<div class="card" id="cWallet">
-  <div class="clabel">步骤 1 — 选择钱包</div>
-  <div class="wgrid">
-    <div class="wbtn" id="b-tl" onclick="connect('tronlink')">
-      <div class="wico c-tl">🔴</div>
-      <div class="wi">
-        <div class="wn">TronLink</div>
-        <div class="wd">插件 / App 内浏览器</div>
-      </div>
-      <div class="wb" id="bx-tl">连接</div>
-    </div>
-
-    <div class="wbtn" id="b-tp" onclick="connect('tokenpocket')">
-      <div class="wico c-tp">🔵</div>
-      <div class="wi">
-        <div class="wn">TokenPocket</div>
-        <div class="wd">App 内置浏览器</div>
-      </div>
-      <div class="wb" id="bx-tp">连接</div>
-    </div>
-
-    <div class="wbtn" id="b-im" onclick="connect('imtoken')">
-      <div class="wico c-im">🟢</div>
-      <div class="wi">
-        <div class="wn">imToken</div>
-        <div class="wd">App 内置浏览器</div>
-      </div>
-      <div class="wb" id="bx-im">连接</div>
-    </div>
-  </div>
-
-  <div id="cErr" class="result bad" style="margin-top:12px"></div>
-
-  <div class="info" style="margin-top:12px">
-    建议测试方式：<br/>
-    1. 电脑：Chrome + TronLink 插件<br/>
-    2. 手机：必须在 TP / imToken / TronLink 的 <strong>DApp 浏览器</strong> 打开<br/>
-    3. 不要在微信、QQ、系统浏览器里测试
-  </div>
-</div>
-
-<div class="card" id="cConfig" style="display:none">
-  <div class="clabel">步骤 2 — 填写多签参数</div>
-
-  <div class="warn">⚠️ 操作不可逆，确认共签地址无误后再点击签名。</div>
-
-  <div class="field">
-    <label>当前主账户（Owner）</label>
-    <input type="text" id="owner" readonly />
-  </div>
-
-  <div class="field">
-    <label>要添加的共签钱包地址</label>
-    <input type="text" id="newSigner" placeholder="T... (TRON 地址，34位)" oninput="onInput()" />
-  </div>
-
-  <div class="row2">
-    <div class="field">
-      <label>签名门槛 (Threshold)</label>
-      <select id="threshold" onchange="onInput()">
-        <option value="1">1 — 任一签名者可操作</option>
-        <option value="2">2 — 双方必须共同签名</option>
-      </select>
-    </div>
-    <div class="field">
-      <label>新签名者权重</label>
-      <select id="weight" onchange="onInput()">
-        <option value="1">1（标准）</option>
-        <option value="2">2（高权重）</option>
-      </select>
-    </div>
-  </div>
-
-  <div class="field">
-    <label>权限类型</label>
-    <select id="permType" onchange="onInput()">
-      <option value="active">Active（推荐）</option>
-      <option value="owner">Owner（谨慎）</option>
-    </select>
-  </div>
-
-  <div class="clabel" style="margin-bottom:8px">钱包将显示的签名内容（txID）</div>
-  <div class="txid-box">
-    <div class="tl">签名内容 (hex)</div>
-    <div class="tv" id="txidPreview">填写共签地址后自动生成…</div>
-  </div>
-
-  <button class="btn btn-red" id="btnSign" onclick="doSignAndBroadcast()" disabled>
-    ✍️ 签名并上链
-  </button>
-</div>
-
-<div class="card" id="cResult" style="display:none">
-  <div class="clabel">步骤 3 — 交易结果</div>
-  <div id="txResult" class="result show ok"></div>
-  <button class="btn btn-gray" onclick="back()" style="margin-top:12px">← 返回修改</button>
-</div>
-
-<div class="card">
-  <div class="clabel">环境检测</div>
-  <div id="envBox" class="mini">初始化中...</div>
-  <button class="btn btn-gray" onclick="refreshEnv()" style="margin-top:12px">刷新环境检测</button>
-</div>
-
-<div class="card">
-  <div class="clabel">调试日志</div>
-  <div id="debugLog" class="debug"></div>
-  <button class="btn btn-gray" onclick="clearDebug()">清空日志</button>
-</div>
-
 <script>
   let tronWeb = null;
   let myAddr = '';
@@ -266,31 +5,60 @@
   let currentWalletType = '';
   let isConnecting = false;
 
+  const WALLET_DOM_MAP = {
+    tronlink: {
+      btn: 'b-tl',
+      badge: 'bx-tl',
+      label: 'TronLink'
+    },
+    tokenpocket: {
+      btn: 'b-tp',
+      badge: 'bx-tp',
+      label: 'TokenPocket'
+    },
+    imtoken: {
+      btn: 'b-im',
+      badge: 'bx-im',
+      label: 'imToken'
+    }
+  };
+
   function log(...args) {
     const text = args.map(v => {
       if (typeof v === 'string') return v;
-      try { return JSON.stringify(v, null, 2); } catch(e) { return String(v); }
+      try { return JSON.stringify(v, null, 2); } catch (e) { return String(v); }
     }).join(' ');
     console.log('[DEBUG]', ...args);
+
     const el = document.getElementById('debugLog');
-    const time = new Date().toLocaleTimeString();
-    el.textContent += `[${time}] ${text}\n`;
-    el.scrollTop = el.scrollHeight;
+    if (el) {
+      const time = new Date().toLocaleTimeString();
+      el.textContent += `[${time}] ${text}\n`;
+      el.scrollTop = el.scrollHeight;
+    }
   }
 
   function clearDebug() {
-    document.getElementById('debugLog').textContent = '';
+    const el = document.getElementById('debugLog');
+    if (el) el.textContent = '';
   }
 
   function setSt(type, text) {
-    document.getElementById('sbar').className = 'sbar ' + type;
-    document.getElementById('dot').className  = 'dot ' + (type === 'on' ? 'gr' : type === 'err' ? 'r' : 'g');
-    document.getElementById('stxt').textContent = text;
+    const sbar = document.getElementById('sbar');
+    const dot = document.getElementById('dot');
+    const stxt = document.getElementById('stxt');
+
+    if (sbar) sbar.className = 'sbar ' + type;
+    if (dot) dot.className = 'dot ' + (type === 'on' ? 'gr' : type === 'err' ? 'r' : 'g');
+    if (stxt) stxt.textContent = text;
   }
 
   function setStep(n) {
-    ['s1','s2','s3'].forEach((id, i) => {
-      document.getElementById(id).className = 'st ' + (i + 1 < n ? 'done' : i + 1 === n ? 'active' : '');
+    ['s1', 's2', 's3'].forEach((id, i) => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.className = 'st ' + (i + 1 < n ? 'done' : i + 1 === n ? 'active' : '');
+      }
     });
   }
 
@@ -300,15 +68,19 @@
 
   function showErr(m) {
     const e = document.getElementById('cErr');
-    e.textContent = m;
-    e.className = 'result bad show';
+    if (e) {
+      e.textContent = m;
+      e.className = 'result bad show';
+    }
     log('ERROR:', m);
   }
 
   function clearErr() {
     const e = document.getElementById('cErr');
-    e.textContent = '';
-    e.className = 'result bad';
+    if (e) {
+      e.textContent = '';
+      e.className = 'result bad';
+    }
   }
 
   function shortAddr(addr) {
@@ -316,17 +88,29 @@
     return addr.slice(0, 8) + '…' + addr.slice(-6);
   }
 
+  function typeLabel(type) {
+    return WALLET_DOM_MAP[type]?.label || type;
+  }
+
   function resetWalletButtons() {
-    ['tronlink', 'tokenpocket', 'imtoken'].forEach(t => {
-      document.getElementById('b-' + t).classList.remove('active');
-      document.getElementById('bx-' + t).textContent = '连接';
+    Object.values(WALLET_DOM_MAP).forEach(item => {
+      const btn = document.getElementById(item.btn);
+      const badge = document.getElementById(item.badge);
+
+      if (btn) btn.classList.remove('active');
+      if (badge) badge.textContent = '连接';
     });
   }
 
   function setWalletButtonActive(type) {
     resetWalletButtons();
-    const btn = document.getElementById('b-' + type);
-    const badge = document.getElementById('bx-' + type);
+
+    const cfg = WALLET_DOM_MAP[type];
+    if (!cfg) return;
+
+    const btn = document.getElementById(cfg.btn);
+    const badge = document.getElementById(cfg.badge);
+
     if (btn) btn.classList.add('active');
     if (badge) badge.textContent = '✓ 已连接';
   }
@@ -348,6 +132,7 @@
       round++;
       const tw = getInjectedTronWeb();
       const addr = tw && tw.defaultAddress ? tw.defaultAddress.base58 : '';
+
       log(`轮询注入 第 ${round} 次`, {
         hasTronWeb: !!tw,
         ready: tw ? tw.ready : undefined,
@@ -357,8 +142,10 @@
       if (tw && tw.defaultAddress && tw.defaultAddress.base58) {
         return tw;
       }
+
       await sleep(interval);
     }
+
     return null;
   }
 
@@ -409,14 +196,6 @@
     }
   }
 
-  function typeLabel(type) {
-    return {
-      tronlink: 'TronLink',
-      tokenpocket: 'TokenPocket',
-      imtoken: 'imToken'
-    }[type] || type;
-  }
-
   function getWalletEnvTips(type) {
     return {
       tronlink: '请确认在 Chrome + TronLink 插件，或 TronLink App DApp 浏览器中打开。',
@@ -456,20 +235,28 @@
     myAddr = tw.defaultAddress.base58;
     currentWalletType = type;
 
-    document.getElementById('owner').value = myAddr;
-    document.getElementById('cConfig').style.display = 'block';
+    const owner = document.getElementById('owner');
+    const cConfig = document.getElementById('cConfig');
+
+    if (owner) owner.value = myAddr;
+    if (cConfig) cConfig.style.display = 'block';
+
     setWalletButtonActive(type);
     setSt('on', typeLabel(type) + '：' + shortAddr(myAddr));
     setStep(2);
+
     log('钱包连接成功：', {
       type,
       address: myAddr,
       ready: tw.ready
     });
+
     onInput();
 
     setTimeout(() => {
-      document.getElementById('cConfig').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (cConfig) {
+        cConfig.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     }, 100);
   }
 
@@ -478,8 +265,8 @@
       log('当前正在连接中，忽略重复点击');
       return;
     }
-    isConnecting = true;
 
+    isConnecting = true;
     clearErr();
     resetWalletButtons();
     setSt('off', '连接中…');
@@ -507,8 +294,13 @@
       myAddr = '';
       currentWalletType = '';
       builtTx = null;
-      document.getElementById('owner').value = '';
-      document.getElementById('cConfig').style.display = 'none';
+
+      const owner = document.getElementById('owner');
+      const cConfig = document.getElementById('cConfig');
+
+      if (owner) owner.value = '';
+      if (cConfig) cConfig.style.display = 'none';
+
       showErr('❌ 连接失败：' + (e.message || e));
       setSt('err', '连接失败');
       log('连接异常完整对象：', e);
@@ -520,34 +312,45 @@
   }
 
   async function onInput() {
-    const newAddr   = document.getElementById('newSigner').value.trim();
-    const threshold = parseInt(document.getElementById('threshold').value, 10);
-    const weight    = parseInt(document.getElementById('weight').value, 10);
-    const permType  = document.getElementById('permType').value;
+    const newAddrEl = document.getElementById('newSigner');
+    const thresholdEl = document.getElementById('threshold');
+    const weightEl = document.getElementById('weight');
+    const permTypeEl = document.getElementById('permType');
+    const btnSign = document.getElementById('btnSign');
+    const txidPreview = document.getElementById('txidPreview');
+
+    if (!newAddrEl || !thresholdEl || !weightEl || !permTypeEl || !btnSign || !txidPreview) {
+      return;
+    }
+
+    const newAddr   = newAddrEl.value.trim();
+    const threshold = parseInt(thresholdEl.value, 10);
+    const weight    = parseInt(weightEl.value, 10);
+    const permType  = permTypeEl.value;
     const valid     = isTron(newAddr) && newAddr !== myAddr;
 
-    document.getElementById('btnSign').disabled = !valid;
+    btnSign.disabled = !valid;
     builtTx = null;
 
     if (!valid || !tronWeb) {
-      document.getElementById('txidPreview').textContent = '填写有效的共签地址后自动生成…';
+      txidPreview.textContent = '填写有效的共签地址后自动生成…';
       return;
     }
 
     try {
       const tx = await buildTx(myAddr, newAddr, threshold, weight, permType);
       builtTx = tx;
-      document.getElementById('txidPreview').textContent = tx.txID;
+      txidPreview.textContent = tx.txID;
       log('交易构建成功：', tx);
     } catch (e) {
-      document.getElementById('txidPreview').textContent = '构建失败：' + (e.message || e);
+      txidPreview.textContent = '构建失败：' + (e.message || e);
       log('交易构建失败：', e);
     }
   }
 
   async function buildTx(owner, newAddr, threshold, weight, permType) {
     const ownerKey = { address: owner, weight: 1 };
-    const newKey   = { address: newAddr, weight: weight };
+    const newKey = { address: newAddr, weight: weight };
     const ops = '7fff1fc0037e0000000000000000000000000000000000000000000000000000';
 
     let ownerPerm, activePerm;
@@ -603,8 +406,11 @@
     }
 
     const btn = document.getElementById('btnSign');
-    btn.disabled = true;
-    btn.textContent = '⏳ 请在钱包中确认签名…';
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = '⏳ 请在钱包中确认签名…';
+    }
+
     log('开始签名并广播');
 
     try {
@@ -643,42 +449,60 @@
       const result = await tronWeb.trx.sendRawTransaction(signedTx);
       log('广播结果：', result);
 
-      document.getElementById('cResult').style.display = 'block';
-      setStep(3);
+      const cResult = document.getElementById('cResult');
       const el = document.getElementById('txResult');
+      const newSignerEl = document.getElementById('newSigner');
+      const thresholdEl = document.getElementById('threshold');
+      const weightEl = document.getElementById('weight');
+      const permTypeEl = document.getElementById('permType');
+
+      if (cResult) cResult.style.display = 'block';
+      setStep(3);
 
       if (result && result.result) {
-        el.className = 'result show ok';
-        el.textContent =
-          '✅ 多签权限设置成功！\n\n' +
-          'TxID:\n' + result.txid + '\n\n' +
-          '共签地址：' + document.getElementById('newSigner').value.trim() + '\n' +
-          '门槛：' + document.getElementById('threshold').value +
-          '   权重：' + document.getElementById('weight').value + '\n' +
-          '权限类型：' + document.getElementById('permType').value + '\n\n' +
-          'TronScan:\nhttps://tronscan.org/#/transaction/' + result.txid;
+        if (el) {
+          el.className = 'result show ok';
+          el.textContent =
+            '✅ 多签权限设置成功！\n\n' +
+            'TxID:\n' + result.txid + '\n\n' +
+            '共签地址：' + (newSignerEl ? newSignerEl.value.trim() : '') + '\n' +
+            '门槛：' + (thresholdEl ? thresholdEl.value : '') +
+            '   权重：' + (weightEl ? weightEl.value : '') + '\n' +
+            '权限类型：' + (permTypeEl ? permTypeEl.value : '') + '\n\n' +
+            'TronScan:\nhttps://tronscan.org/#/transaction/' + result.txid;
+        }
         setSt('on', '✅ 多签设置完成');
       } else {
-        el.className = 'result show bad';
-        el.textContent = '❌ 广播失败：\n' + JSON.stringify(result, null, 2);
+        if (el) {
+          el.className = 'result show bad';
+          el.textContent = '❌ 广播失败：\n' + JSON.stringify(result, null, 2);
+        }
         setSt('err', '广播失败');
       }
 
-      document.getElementById('cResult').scrollIntoView({ behavior: 'smooth' });
+      if (cResult) cResult.scrollIntoView({ behavior: 'smooth' });
     } catch (e) {
-      document.getElementById('cResult').style.display = 'block';
-      document.getElementById('txResult').className = 'result show bad';
-      document.getElementById('txResult').textContent = '❌ ' + (e.message || JSON.stringify(e));
+      const cResult = document.getElementById('cResult');
+      const el = document.getElementById('txResult');
+
+      if (cResult) cResult.style.display = 'block';
+      if (el) {
+        el.className = 'result show bad';
+        el.textContent = '❌ ' + (e.message || JSON.stringify(e));
+      }
       setSt('err', '操作失败');
       log('签名/广播异常：', e);
     } finally {
-      btn.disabled = false;
-      btn.textContent = '✍️ 签名并上链';
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = '✍️ 签名并上链';
+      }
     }
   }
 
   function back() {
-    document.getElementById('cResult').style.display = 'none';
+    const cResult = document.getElementById('cResult');
+    if (cResult) cResult.style.display = 'none';
     setStep(2);
   }
 
@@ -687,6 +511,7 @@
     const tl = window.tronLink;
     const tp = window.tokenpocket;
     const im = window.imToken;
+    const envBox = document.getElementById('envBox');
 
     const info = [
       'URL: ' + location.href,
@@ -700,7 +525,8 @@
       'tronWeb.defaultAddress.hex: ' + (tw && tw.defaultAddress ? (tw.defaultAddress.hex || '') : '')
     ].join('\n');
 
-    document.getElementById('envBox').textContent = info;
+    if (envBox) envBox.textContent = info;
+
     log('刷新环境检测：', {
       hasTronWeb: !!tw,
       hasTronLink: !!tl,
@@ -720,7 +546,10 @@
       log('检测到账户变化：', { old: myAddr, new: latest });
       tronWeb = tw;
       myAddr = latest;
-      document.getElementById('owner').value = myAddr;
+
+      const owner = document.getElementById('owner');
+      if (owner) owner.value = myAddr;
+
       setSt('on', typeLabel(currentWalletType || 'tronlink') + '：' + shortAddr(myAddr));
       onInput();
       refreshEnv();
@@ -755,5 +584,3 @@
 
   bindWalletEvents();
 </script>
-</body>
-</html>
