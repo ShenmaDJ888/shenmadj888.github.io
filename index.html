@@ -2,519 +2,635 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TRON 多重签名管理</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>TRON 多签权限添加</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #0d1117;
-      color: #e6edf3;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 24px 16px;
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: #0f1115;
+      color: #e8ecf3;
     }
-    .card {
-      background: #161b22;
-      border: 1px solid #30363d;
-      border-radius: 16px;
+
+    .wrap {
+      max-width: 920px;
+      margin: 0 auto;
       padding: 24px;
-      width: 100%;
-      max-width: 480px;
-      margin-bottom: 16px;
     }
-    .card-title {
-      font-size: 13px;
-      color: #8b949e;
-      margin-bottom: 12px;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
+
+    .card {
+      background: #171a21;
+      border: 1px solid #2a2f3a;
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 18px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
     }
+
     h1 {
-      font-size: 20px;
+      margin: 0 0 10px;
+      font-size: 28px;
       font-weight: 700;
-      margin-bottom: 4px;
-      background: linear-gradient(135deg, #e84142, #ff6b6b);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
     }
-    .subtitle { font-size: 13px; color: #8b949e; margin-bottom: 24px; }
-    .logo { font-size: 28px; margin-bottom: 8px; }
 
-    .status-bar {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 14px;
-      border-radius: 10px;
-      font-size: 13px;
-      margin-bottom: 8px;
-    }
-    .status-bar.disconnected { background: #1f2937; color: #8b949e; }
-    .status-bar.connected { background: #0d2818; color: #3fb950; border: 1px solid #1a4731; }
-    .status-bar.error { background: #2d1117; color: #f85149; border: 1px solid #6e2c2c; }
-    .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-    .dot.green { background: #3fb950; }
-    .dot.gray { background: #484f58; }
-    .dot.red { background: #f85149; }
-
-    label {
-      display: block;
-      font-size: 13px;
-      color: #8b949e;
-      margin-bottom: 6px;
-    }
-    input[type="text"], select {
-      width: 100%;
-      background: #0d1117;
-      border: 1px solid #30363d;
-      border-radius: 10px;
-      padding: 12px 14px;
-      color: #e6edf3;
+    .desc {
+      color: #aeb8c7;
       font-size: 14px;
-      outline: none;
-      transition: border-color 0.2s;
-      margin-bottom: 16px;
-    }
-    input[type="text"]:focus, select:focus { border-color: #e84142; }
-    input[type="text"]::placeholder { color: #484f58; }
-
-    .row { display: flex; gap: 10px; align-items: flex-end; }
-    .row > div { flex: 1; }
-
-    .info-box {
-      background: #0d1117;
-      border: 1px solid #30363d;
-      border-radius: 10px;
-      padding: 12px 14px;
-      font-size: 12px;
-      color: #8b949e;
-      margin-bottom: 16px;
-      line-height: 1.6;
-    }
-    .info-box strong { color: #e6edf3; }
-
-    .perm-preview {
-      background: #0d1117;
-      border: 1px solid #21262d;
-      border-radius: 10px;
-      padding: 14px;
-      margin-bottom: 16px;
-      font-size: 12px;
-      font-family: 'SF Mono', 'Fira Code', monospace;
-      color: #79c0ff;
-      white-space: pre-wrap;
-      word-break: break-all;
-      max-height: 160px;
-      overflow-y: auto;
+      line-height: 1.7;
     }
 
-    btn { display: block; }
-    .btn {
-      width: 100%;
-      padding: 14px;
-      border-radius: 12px;
-      border: none;
-      font-size: 15px;
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    @media (max-width: 760px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .field {
+      margin-bottom: 14px;
+    }
+
+    .label {
+      display: block;
+      margin-bottom: 8px;
+      color: #c7d0dd;
+      font-size: 14px;
       font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-      margin-bottom: 10px;
     }
-    .btn-primary {
-      background: linear-gradient(135deg, #e84142, #c0392b);
+
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid #313846;
+      background: #0f131a;
+      color: #eef3fb;
+      border-radius: 12px;
+      padding: 12px 14px;
+      outline: none;
+      font-size: 14px;
+    }
+
+    textarea {
+      min-height: 140px;
+      resize: vertical;
+      line-height: 1.6;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    input[readonly] {
+      color: #9fb0c8;
+      background: #11161f;
+    }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 12px 18px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    button.primary {
+      background: #2f7cff;
       color: #fff;
     }
-    .btn-primary:hover:not(:disabled) { opacity: 0.9; transform: translateY(-1px); }
-    .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
-    .btn-secondary {
-      background: #21262d;
-      color: #e6edf3;
-      border: 1px solid #30363d;
-    }
-    .btn-secondary:hover:not(:disabled) { background: #2d333b; }
-    .btn-secondary:disabled { opacity: 0.4; cursor: not-allowed; }
 
-    .result-box {
-      background: #0d2818;
-      border: 1px solid #1a4731;
-      border-radius: 10px;
-      padding: 14px;
-      margin-top: 12px;
+    button.primary:hover {
+      background: #266ceb;
+    }
+
+    button.secondary {
+      background: #232a36;
+      color: #e8ecf3;
+      border: 1px solid #313846;
+    }
+
+    button.secondary:hover {
+      background: #2a3340;
+    }
+
+    button.danger {
+      background: #d64444;
+      color: #fff;
+    }
+
+    button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
       font-size: 12px;
-      color: #3fb950;
+      font-weight: 700;
+      background: #1e2633;
+      color: #8fb5ff;
+      border: 1px solid #2d3b57;
+      margin-right: 8px;
+      margin-bottom: 8px;
+    }
+
+    pre {
+      margin: 0;
+      white-space: pre-wrap;
       word-break: break-all;
-      display: none;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #cfe0ff;
     }
-    .result-box.error { background: #2d1117; border-color: #6e2c2c; color: #f85149; }
-    .result-box.show { display: block; }
 
-    .warning-box {
-      background: #2d1f00;
-      border: 1px solid #6e4c00;
-      border-radius: 10px;
-      padding: 12px 14px;
+    .warn {
+      color: #ffcf70;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .ok {
+      color: #4be28b;
+    }
+
+    .err {
+      color: #ff8383;
+    }
+
+    .muted {
+      color: #93a0b4;
+      font-size: 13px;
+    }
+
+    .preview-box {
+      background: #0f131a;
+      border: 1px solid #313846;
+      border-radius: 12px;
+      padding: 14px;
+    }
+
+    .kv {
+      display: flex;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px dashed #2a3140;
+      align-items: flex-start;
+    }
+
+    .kv:last-child {
+      border-bottom: none;
+    }
+
+    .kv .k {
+      width: 140px;
+      flex-shrink: 0;
+      color: #95a4bb;
+      font-size: 13px;
+    }
+
+    .kv .v {
+      flex: 1;
+      font-size: 14px;
+      color: #edf2fb;
+      word-break: break-all;
+    }
+
+    .small {
       font-size: 12px;
-      color: #d29922;
-      margin-bottom: 16px;
+      color: #98a5b8;
+      margin-top: 8px;
       line-height: 1.6;
     }
-
-    .section-divider {
-      border: none;
-      border-top: 1px solid #21262d;
-      margin: 16px 0;
-    }
-
-    .badge {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 20px;
-      font-size: 11px;
-      font-weight: 600;
-      background: #1a3a5c;
-      color: #58a6ff;
-      margin-left: 6px;
-    }
-
-    .step-indicator {
-      display: flex;
-      gap: 6px;
-      margin-bottom: 20px;
-    }
-    .step {
-      flex: 1;
-      height: 3px;
-      border-radius: 2px;
-      background: #21262d;
-      transition: background 0.3s;
-    }
-    .step.active { background: #e84142; }
-    .step.done { background: #3fb950; }
   </style>
 </head>
 <body>
-
-<div class="card">
-  <div class="logo">🔐</div>
-  <h1>TRON 多签管理</h1>
-  <p class="subtitle">为账户添加共签钱包，不转移所有权</p>
-
-  <div class="step-indicator">
-    <div class="step active" id="step1"></div>
-    <div class="step" id="step2"></div>
-    <div class="step" id="step3"></div>
-  </div>
-
-  <div id="statusBar" class="status-bar disconnected">
-    <div class="dot gray"></div>
-    <span id="statusText">未连接钱包</span>
-  </div>
-</div>
-
-<!-- Step 1: Connect -->
-<div class="card" id="cardConnect">
-  <div class="card-title">步骤 1 — 连接钱包</div>
-  <p class="info-box">
-    需要安装 <strong>TronLink</strong> 或 <strong>TokenPocket</strong> 浏览器插件 / App 内浏览器。<br/>
-    连接后将读取您的当前钱包地址作为主账户。
-  </p>
-  <button class="btn btn-primary" id="btnConnect" onclick="connectWallet()">连接 TronLink 钱包</button>
-  <div id="connectResult" class="result-box"></div>
-</div>
-
-<!-- Step 2: Config -->
-<div class="card" id="cardConfig" style="display:none">
-  <div class="card-title">步骤 2 — 配置多签参数</div>
-
-  <div class="warning-box">
-    ⚠️ <strong>操作前请仔细确认</strong><br/>
-    本操作会修改账户权限结构。添加共签钱包后，部分操作需要多方签名才能执行。
-  </div>
-
-  <label>当前主账户（Owner）</label>
-  <input type="text" id="ownerAddr" readonly placeholder="连接钱包后自动填入" />
-
-  <label>要添加的共签钱包地址 <span class="badge">新增</span></label>
-  <input type="text" id="newSignerAddr" placeholder="T... (TRON 地址)" />
-
-  <div class="row">
-    <div>
-      <label>签名门槛 (Threshold)</label>
-      <select id="threshold">
-        <option value="1">1 签即可（任一签名者）</option>
-        <option value="2">2 签才可（需双方确认）</option>
-      </select>
+  <div class="wrap">
+    <div class="card">
+      <h1>TRON 多签权限添加页面</h1>
+      <div class="desc">
+        这个页面会读取你当前账户的权限结构，然后把
+        <b>TJfe4EZzNm5oomMNUwLd1kCgwwoJokFwGN</b>
+        加入到你选中的 <b>active_permission</b> 中。<br />
+        默认配置为：当前钱包权重 1，新增地址权重 1，阈值 2，也就是常见的 <b>2/2 多签</b>。
+      </div>
     </div>
-    <div>
-      <label>新签名者权重</label>
-      <select id="newWeight">
-        <option value="1">1（标准）</option>
-        <option value="2">2（高权重）</option>
-      </select>
+
+    <div class="card">
+      <div class="grid">
+        <div>
+          <div class="field">
+            <label class="label">当前钱包地址</label>
+            <input id="currentAddress" readonly placeholder="请先连接 TronLink" />
+          </div>
+
+          <div class="field">
+            <label class="label">新增权限地址</label>
+            <input id="newAddress" value="TJfe4EZzNm5oomMNUwLd1kCgwwoJokFwGN" />
+          </div>
+
+          <div class="field">
+            <label class="label">当前钱包权重</label>
+            <input id="currentWeight" type="number" value="1" min="1" />
+          </div>
+
+          <div class="field">
+            <label class="label">新增地址权重</label>
+            <input id="newWeight" type="number" value="1" min="1" />
+          </div>
+
+          <div class="field">
+            <label class="label">阈值 threshold</label>
+            <input id="threshold" type="number" value="2" min="1" />
+          </div>
+
+          <div class="field">
+            <label class="label">要修改的 active_permission 索引</label>
+            <input id="activeIndex" type="number" value="0" min="0" />
+            <div class="small">默认修改第 1 个 active_permission，也就是索引 0。</div>
+          </div>
+        </div>
+
+        <div>
+          <div class="field">
+            <label class="label">操作说明</label>
+            <div class="preview-box">
+              <div class="kv">
+                <div class="k">修改类型</div>
+                <div class="v">只修改 active_permission，不改 owner_permission</div>
+              </div>
+              <div class="kv">
+                <div class="k">新增地址</div>
+                <div class="v" id="previewNewAddress">TJfe4EZzNm5oomMNUwLd1kCgwwoJokFwGN</div>
+              </div>
+              <div class="kv">
+                <div class="k">默认结构</div>
+                <div class="v">当前钱包 1 + 新地址 1，threshold 2</div>
+              </div>
+              <div class="kv">
+                <div class="k">结果</div>
+                <div class="v">后续使用该 active 权限的交易，需要累计权重达到阈值</div>
+              </div>
+            </div>
+
+            <div class="small">
+              注意：TRON 权限更新是整体覆盖，不是局部追加。页面会先读取链上原权限，再在原结构上修改后整体提交。
+            </div>
+          </div>
+
+          <div class="field">
+            <span class="tag">推荐：只改 active</span>
+            <span class="tag">不要随便改 owner</span>
+            <span class="tag">先小号测试</span>
+          </div>
+
+          <div class="btn-row">
+            <button class="primary" id="connectBtn">连接钱包</button>
+            <button class="secondary" id="loadBtn">读取权限</button>
+            <button class="secondary" id="previewBtn">生成预览</button>
+            <button class="danger" id="updateBtn">发起权限更新签名</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="field">
+        <label class="label">权限预览</label>
+        <textarea id="previewArea" readonly placeholder="点击“生成预览”后会显示将要提交的权限结构"></textarea>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="field">
+        <label class="label">当前账户原始权限数据</label>
+        <textarea id="accountInfo" readonly placeholder="点击“读取权限”后显示"></textarea>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="field">
+        <label class="label">执行日志</label>
+        <textarea id="result" readonly placeholder="执行结果会显示在这里"></textarea>
+      </div>
+      <div class="warn">
+        警告：这会修改链上权限结构。广播前请确认没有删掉原地址、没有把 threshold 设成无法满足、没有误改别的 permission。
+      </div>
     </div>
   </div>
 
-  <label>权限类型</label>
-  <select id="permType">
-    <option value="active">Active（推荐 - 仅操作权，保留 Owner 独占）</option>
-    <option value="owner">Owner（最高权限 - 谨慎！）</option>
-  </select>
+  <script>
+    let tronWeb = null;
+    let currentAccount = null;
+    let preparedPermissions = null;
 
-  <hr class="section-divider"/>
-  <div class="card-title">权限结构预览</div>
-  <div class="perm-preview" id="permPreview">填写上方参数后自动生成...</div>
+    function setText(id, value) {
+      document.getElementById(id).value = typeof value === "string" ? value : JSON.stringify(value, null, 2);
+    }
 
-  <button class="btn btn-primary" id="btnBuild" onclick="buildAndSign()" disabled>
-    📝 构建并发起签名请求
-  </button>
-</div>
+    function appendLog(msg, type = "") {
+      const now = new Date();
+      const time = now.toLocaleTimeString();
+      const area = document.getElementById("result");
+      const prefix = type ? `[${time}] [${type}] ` : `[${time}] `;
+      area.value += prefix + msg + "\n\n";
+      area.scrollTop = area.scrollHeight;
+    }
 
-<!-- Step 3: Result -->
-<div class="card" id="cardResult" style="display:none">
-  <div class="card-title">步骤 3 — 交易结果</div>
-  <div id="txResult" class="result-box show"></div>
-  <button class="btn btn-secondary" onclick="resetToStep2()" style="margin-top:12px">← 返回修改</button>
-</div>
+    function clearLog() {
+      document.getElementById("result").value = "";
+    }
 
-<script>
-  let tronWeb = null;
-  let currentAddress = '';
+    function deepClone(obj) {
+      return JSON.parse(JSON.stringify(obj));
+    }
 
-  // ── 工具函数 ──────────────────────────────────────────
-  function isTronAddress(addr) {
-    return /^T[A-Za-z0-9]{33}$/.test(addr);
-  }
+    function safeStringify(obj) {
+      return JSON.stringify(obj, null, 2);
+    }
 
-  function setStatus(type, text) {
-    const bar = document.getElementById('statusBar');
-    const dot = bar.querySelector('.dot');
-    bar.className = 'status-bar ' + type;
-    dot.className = 'dot ' + (type === 'connected' ? 'green' : type === 'error' ? 'red' : 'gray');
-    document.getElementById('statusText').textContent = text;
-  }
-
-  function showResult(elId, msg, isError) {
-    const el = document.getElementById(elId);
-    el.className = 'result-box show' + (isError ? ' error' : '');
-    el.textContent = msg;
-  }
-
-  function setStep(n) {
-    ['step1','step2','step3'].forEach((id, i) => {
-      document.getElementById(id).className = 'step ' + (i + 1 < n ? 'done' : i + 1 === n ? 'active' : '');
-    });
-  }
-
-  // ── 连接钱包 ──────────────────────────────────────────
-  async function connectWallet() {
-    try {
-      document.getElementById('btnConnect').disabled = true;
-      document.getElementById('btnConnect').textContent = '连接中...';
-
-      if (typeof window.tronWeb === 'undefined' && typeof window.tronLink === 'undefined') {
-        showResult('connectResult', '❌ 未检测到 TronLink！请在 TronLink App 内浏览器或安装插件后访问。', true);
-        document.getElementById('btnConnect').disabled = false;
-        document.getElementById('btnConnect').textContent = '连接 TronLink 钱包';
-        return;
+    function ensureTronWeb() {
+      if (!window.tronWeb || !window.tronWeb.defaultAddress || !window.tronWeb.defaultAddress.base58) {
+        throw new Error("未检测到 TronLink，或钱包尚未连接/解锁");
       }
-
-      // 尝试请求授权
-      if (window.tronLink && window.tronLink.request) {
-        await window.tronLink.request({ method: 'tron_requestAccounts' });
-      }
-
       tronWeb = window.tronWeb;
+      return tronWeb;
+    }
 
-      if (!tronWeb || !tronWeb.defaultAddress || !tronWeb.defaultAddress.base58) {
-        showResult('connectResult', '❌ 钱包未解锁或拒绝连接，请在 TronLink 中确认授权。', true);
-        document.getElementById('btnConnect').disabled = false;
-        document.getElementById('btnConnect').textContent = '连接 TronLink 钱包';
-        return;
+    function isValidPositiveInt(v, fieldName) {
+      const n = Number(v);
+      if (!Number.isInteger(n) || n <= 0) {
+        throw new Error(fieldName + " 必须是大于 0 的整数");
+      }
+      return n;
+    }
+
+    function isValidNonNegativeInt(v, fieldName) {
+      const n = Number(v);
+      if (!Number.isInteger(n) || n < 0) {
+        throw new Error(fieldName + " 必须是大于等于 0 的整数");
+      }
+      return n;
+    }
+
+    function getFormValues() {
+      const tw = ensureTronWeb();
+
+      const currentAddress = tw.defaultAddress.base58;
+      const newAddress = document.getElementById("newAddress").value.trim();
+      const currentWeight = isValidPositiveInt(document.getElementById("currentWeight").value, "当前钱包权重");
+      const newWeight = isValidPositiveInt(document.getElementById("newWeight").value, "新增地址权重");
+      const threshold = isValidPositiveInt(document.getElementById("threshold").value, "threshold");
+      const activeIndex = isValidNonNegativeInt(document.getElementById("activeIndex").value, "active_permission 索引");
+
+      if (!tw.isAddress(newAddress)) {
+        throw new Error("新增权限地址不是合法 TRON 地址");
       }
 
-      currentAddress = tronWeb.defaultAddress.base58;
-      setStatus('connected', '已连接：' + currentAddress.slice(0,8) + '...' + currentAddress.slice(-6));
-
-      document.getElementById('ownerAddr').value = currentAddress;
-      document.getElementById('cardConfig').style.display = 'block';
-      document.getElementById('btnConnect').textContent = '✅ 已连接';
-      setStep(2);
-      updatePreview();
-
-      // 监听输入变化
-      document.getElementById('newSignerAddr').addEventListener('input', updatePreview);
-      document.getElementById('threshold').addEventListener('change', updatePreview);
-      document.getElementById('newWeight').addEventListener('change', updatePreview);
-      document.getElementById('permType').addEventListener('change', updatePreview);
-
-    } catch (e) {
-      showResult('connectResult', '❌ 连接失败：' + e.message, true);
-      document.getElementById('btnConnect').disabled = false;
-      document.getElementById('btnConnect').textContent = '连接 TronLink 钱包';
-    }
-  }
-
-  // ── 预览权限结构 ──────────────────────────────────────
-  function updatePreview() {
-    const newAddr = document.getElementById('newSignerAddr').value.trim();
-    const threshold = parseInt(document.getElementById('threshold').value);
-    const newWeight = parseInt(document.getElementById('newWeight').value);
-    const permType = document.getElementById('permType').value;
-    const btn = document.getElementById('btnBuild');
-
-    const valid = isTronAddress(newAddr) && newAddr !== currentAddress;
-    btn.disabled = !valid;
-
-    const ownerKey = { address: currentAddress, weight: 1 };
-    const newKey = valid ? { address: newAddr, weight: newWeight } : { address: 'T...新签名者地址', weight: newWeight };
-
-    let preview;
-    if (permType === 'active') {
-      preview = {
-        owner: {
-          type: 0,
-          permission_name: 'owner',
-          threshold: 1,
-          keys: [ownerKey]
-        },
-        actives: [{
-          type: 2,
-          permission_name: 'active',
-          threshold: threshold,
-          operations: '7fff1fc0037e0000000000000000000000000000000000000000000000000000',
-          keys: [ownerKey, newKey]
-        }]
-      };
-    } else {
-      preview = {
-        owner: {
-          type: 0,
-          permission_name: 'owner',
-          threshold: threshold,
-          keys: [ownerKey, newKey]
-        },
-        actives: [{
-          type: 2,
-          permission_name: 'active',
-          threshold: threshold,
-          operations: '7fff1fc0037e0000000000000000000000000000000000000000000000000000',
-          keys: [ownerKey, newKey]
-        }]
-      };
-    }
-
-    document.getElementById('permPreview').textContent = JSON.stringify(preview, null, 2);
-  }
-
-  // ── 构建交易并请求签名 ────────────────────────────────
-  async function buildAndSign() {
-    const newAddr = document.getElementById('newSignerAddr').value.trim();
-    const threshold = parseInt(document.getElementById('threshold').value);
-    const newWeight = parseInt(document.getElementById('newWeight').value);
-    const permType = document.getElementById('permType').value;
-
-    if (!isTronAddress(newAddr)) {
-      alert('请输入有效的 TRON 地址（T 开头，34位）');
-      return;
-    }
-    if (newAddr === currentAddress) {
-      alert('不能将自己的地址作为新签名者');
-      return;
-    }
-
-    document.getElementById('btnBuild').disabled = true;
-    document.getElementById('btnBuild').textContent = '构建中...';
-
-    try {
-      const ownerKey = { address: currentAddress, weight: 1 };
-      const newKey = { address: newAddr, weight: newWeight };
-
-      let ownerPermission, activePermissions;
-
-      if (permType === 'active') {
-        // 只修改 Active 权限，Owner 保持独占
-        ownerPermission = {
-          type: 0,
-          permission_name: 'owner',
-          threshold: 1,
-          keys: [ownerKey]
-        };
-        activePermissions = [{
-          type: 2,
-          permission_name: 'active',
-          threshold: threshold,
-          operations: '7fff1fc0037e0000000000000000000000000000000000000000000000000000',
-          keys: [ownerKey, newKey]
-        }];
-      } else {
-        // 同时修改 Owner 权限
-        ownerPermission = {
-          type: 0,
-          permission_name: 'owner',
-          threshold: threshold,
-          keys: [ownerKey, newKey]
-        };
-        activePermissions = [{
-          type: 2,
-          permission_name: 'active',
-          threshold: threshold,
-          operations: '7fff1fc0037e0000000000000000000000000000000000000000000000000000',
-          keys: [ownerKey, newKey]
-        }];
-      }
-
-      // 构建 updateAccountPermission 交易
-      const tx = await tronWeb.transactionBuilder.updateAccountPermissions(
+      return {
         currentAddress,
-        ownerPermission,
-        null, // witness（普通账户填 null）
-        activePermissions
-      );
-
-      // 调用钱包签名（触发图中那种弹窗）
-      const signedTx = await tronWeb.trx.sign(tx);
-
-      // 广播上链
-      const result = await tronWeb.trx.sendRawTransaction(signedTx);
-
-      document.getElementById('cardResult').style.display = 'block';
-      setStep(3);
-
-      if (result && result.result) {
-        document.getElementById('txResult').className = 'result-box show';
-        document.getElementById('txResult').innerHTML =
-          '✅ 多签权限设置成功！\n\n' +
-          'TxID: ' + result.txid + '\n\n' +
-          '新签名者地址：' + newAddr + '\n' +
-          '门槛：' + threshold + '\n' +
-          '权限类型：' + permType + '\n\n' +
-          '可在 TronScan 查看：\nhttps://tronscan.org/#/transaction/' + result.txid;
-        setStatus('connected', '✅ 多签设置完成');
-      } else {
-        document.getElementById('txResult').className = 'result-box show error';
-        document.getElementById('txResult').textContent =
-          '❌ 广播失败：' + JSON.stringify(result);
-      }
-
-    } catch (e) {
-      document.getElementById('cardResult').style.display = 'block';
-      document.getElementById('txResult').className = 'result-box show error';
-      document.getElementById('txResult').textContent = '❌ 错误：' + (e.message || e);
-      setStatus('error', '操作失败');
+        newAddress,
+        currentWeight,
+        newWeight,
+        threshold,
+        activeIndex
+      };
     }
 
-    document.getElementById('btnBuild').disabled = false;
-    document.getElementById('btnBuild').textContent = '📝 构建并发起签名请求';
-    document.getElementById('cardResult').scrollIntoView({ behavior: 'smooth' });
-  }
+    function findKeyIndexByHex(keys, hexAddr) {
+      return keys.findIndex(item => String(item.address || "").toLowerCase() === String(hexAddr).toLowerCase());
+    }
 
-  function resetToStep2() {
-    document.getElementById('cardResult').style.display = 'none';
-    setStep(2);
-  }
-</script>
+    async function connectWallet() {
+      try {
+        clearLog();
+
+        if (window.tronLink && typeof window.tronLink.request === "function") {
+          try {
+            await window.tronLink.request({ method: "tron_requestAccounts" });
+          } catch (e) {
+          }
+        }
+
+        const tw = ensureTronWeb();
+        const address = tw.defaultAddress.base58;
+        document.getElementById("currentAddress").value = address;
+        appendLog("钱包连接成功：" + address, "OK");
+      } catch (err) {
+        appendLog(err.message || String(err), "ERR");
+      }
+    }
+
+    async function loadPermissions() {
+      try {
+        const tw = ensureTronWeb();
+        const address = tw.defaultAddress.base58;
+        document.getElementById("currentAddress").value = address;
+
+        const account = await tw.trx.getAccount(address);
+        currentAccount = account;
+
+        setText("accountInfo", account);
+        appendLog("已读取当前账户权限数据", "OK");
+
+        if (!account.owner_permission) {
+          appendLog("警告：未读取到 owner_permission", "WARN");
+        }
+
+        if (!account.active_permission || !Array.isArray(account.active_permission) || account.active_permission.length === 0) {
+          throw new Error("当前账户没有 active_permission");
+        }
+
+        appendLog("active_permission 数量：" + account.active_permission.length, "INFO");
+      } catch (err) {
+        appendLog(err.message || String(err), "ERR");
+      }
+    }
+
+    function buildUpdatedPermissions() {
+      if (!currentAccount) {
+        throw new Error("请先读取当前账户权限");
+      }
+
+      const tw = ensureTronWeb();
+      const {
+        currentAddress,
+        newAddress,
+        currentWeight,
+        newWeight,
+        threshold,
+        activeIndex
+      } = getFormValues();
+
+      const currentHex = tw.address.toHex(currentAddress);
+      const newHex = tw.address.toHex(newAddress);
+
+      const ownerPermission = deepClone(currentAccount.owner_permission);
+      const witnessPermission = currentAccount.witness_permission
+        ? deepClone(currentAccount.witness_permission)
+        : null;
+      const activePermissions = deepClone(currentAccount.active_permission);
+
+      if (!Array.isArray(activePermissions) || activePermissions.length === 0) {
+        throw new Error("当前账户没有 active_permission");
+      }
+
+      if (activeIndex >= activePermissions.length) {
+        throw new Error(`你填写的 active_permission 索引 ${activeIndex} 超出范围，当前最多只能填 ${activePermissions.length - 1}`);
+      }
+
+      const target = activePermissions[activeIndex];
+
+      if (!target.keys || !Array.isArray(target.keys)) {
+        target.keys = [];
+      }
+
+      if (!target.operations) {
+        throw new Error("目标 active_permission 缺少 operations，无法安全更新");
+      }
+
+      const currentIdx = findKeyIndexByHex(target.keys, currentHex);
+      if (currentIdx >= 0) {
+        target.keys[currentIdx].weight = currentWeight;
+      } else {
+        target.keys.push({
+          address: currentHex,
+          weight: currentWeight
+        });
+      }
+
+      const newIdx = findKeyIndexByHex(target.keys, newHex);
+      if (newIdx >= 0) {
+        target.keys[newIdx].weight = newWeight;
+      } else {
+        target.keys.push({
+          address: newHex,
+          weight: newWeight
+        });
+      }
+
+      target.threshold = threshold;
+
+      if (threshold > target.keys.reduce((sum, item) => sum + Number(item.weight || 0), 0)) {
+        throw new Error("threshold 大于当前 keys 总权重，后续将无法满足签名条件");
+      }
+
+      preparedPermissions = {
+        ownerPermission,
+        witnessPermission,
+        activePermissions,
+        targetPermission: target
+      };
+
+      return preparedPermissions;
+    }
+
+    function previewPermissions() {
+      try {
+        const data = buildUpdatedPermissions();
+        const {
+          currentAddress,
+          newAddress,
+          currentWeight,
+          newWeight,
+          threshold,
+          activeIndex
+        } = getFormValues();
+
+        document.getElementById("previewNewAddress").textContent = newAddress;
+
+        const previewData = {
+          currentAddress,
+          newAddress,
+          currentWeight,
+          newWeight,
+          threshold,
+          activeIndex,
+          targetPermissionAfterUpdate: data.targetPermission,
+          fullActivePermissionsAfterUpdate: data.activePermissions
+        };
+
+        setText("previewArea", previewData);
+        appendLog("已生成权限更新预览", "OK");
+      } catch (err) {
+        appendLog(err.message || String(err), "ERR");
+      }
+    }
+
+    async function updatePermissions() {
+      try {
+        const tw = ensureTronWeb();
+
+        if (!currentAccount) {
+          throw new Error("请先点击“读取权限”");
+        }
+
+        const {
+          currentAddress
+        } = getFormValues();
+
+        const data = buildUpdatedPermissions();
+
+        appendLog("正在构造 AccountPermissionUpdate 交易...", "INFO");
+
+        const unsignedTx = await tw.transactionBuilder.updateAccountPermissions(
+          currentAddress,
+          data.ownerPermission,
+          data.witnessPermission,
+          data.activePermissions
+        );
+
+        appendLog("交易构造成功，准备拉起钱包签名", "OK");
+
+        const signedTx = await tw.trx.sign(unsignedTx);
+
+        if (!signedTx || !signedTx.signature || !signedTx.signature.length) {
+          throw new Error("用户取消签名，或签名失败");
+        }
+
+        appendLog("签名成功，正在广播交易...", "OK");
+
+        const broadcast = await tw.trx.sendRawTransaction(signedTx);
+
+        appendLog("广播结果：\n" + safeStringify(broadcast), broadcast.result ? "OK" : "ERR");
+
+        if (broadcast.result) {
+          appendLog("权限更新交易已提交成功，建议稍后重新读取权限确认链上状态", "OK");
+        }
+      } catch (err) {
+        appendLog(err.message || String(err), "ERR");
+      }
+    }
+
+    document.getElementById("connectBtn").addEventListener("click", connectWallet);
+    document.getElementById("loadBtn").addEventListener("click", loadPermissions);
+    document.getElementById("previewBtn").addEventListener("click", previewPermissions);
+    document.getElementById("updateBtn").addEventListener("click", updatePermissions);
+
+    document.getElementById("newAddress").addEventListener("input", function () {
+      document.getElementById("previewNewAddress").textContent = this.value.trim();
+    });
+
+    window.addEventListener("load", async () => {
+      if (window.tronWeb && window.tronWeb.defaultAddress && window.tronWeb.defaultAddress.base58) {
+        document.getElementById("currentAddress").value = window.tronWeb.defaultAddress.base58;
+      }
+    });
+  </script>
 </body>
 </html>
