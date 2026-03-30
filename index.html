@@ -2,326 +2,519 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <title>USDC转账</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TRON 多重签名管理</title>
   <style>
-    html { font-size: 16px; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      width: 100vw; height: 100vh;
-      background-color: #f2f2f2; margin: 0; padding: 0;
-    }
-    body * { box-sizing: border-box; flex-shrink: 0; }
-
-    .van-icon { display: inline-block; font-size: 14px; line-height: 1; }
-    .van-icon:before { display: inline-block; }
-    .van-icon-arrow-down:before { content: "▼"; }
-    .van-icon-arrow:before { content: "→"; }
-    .van-icon-warning:before { content: "⚠"; }
-    .van-icon-clear:before { content: "×"; }
-
-    :root {
-      --van-white: #fff;
-      --van-gray-1: #f7f8fa;
-      --van-gray-2: #f2f3f5;
-      --van-gray-3: #ebedf0;
-      --van-gray-4: #dcdee0;
-      --van-gray-5: #c8c9cc;
-      --van-gray-6: #969799;
-      --van-gray-7: #646566;
-      --van-gray-8: #323233;
-      --van-blue: #1989fa;
-      --van-red: #ee0a24;
-      --van-duration-fast: 0.2s;
-      --van-padding-xs: 8px;
-    }
-
-    .van-badge__wrapper { display: inline-block; position: relative; line-height: 1; }
-
-    .page-box { width: 100%; min-height: 100vh; background-color: #fff; }
-    .page-box .fuck-tag { width: 100%; height: 5px; background-color: var(--van-gray-1); margin: 20px 0; }
-    .page-box .error {
-      display: none;
-      justify-content: flex-start;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0d1117;
+      color: #e6edf3;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
       align-items: center;
-      color: #c53228;
-      margin: 8px 0 0;
-      font-size: 10px;
+      padding: 24px 16px;
     }
-    .page-box .error span { margin-left: 5px; }
-    .page-box .down-icon { transform: translateY(3px); }
-    .page-box .tranfer-btn {
-      width: calc(100% - 30px);
-      border-radius: 8px;
-      height: 44px;
-      font-size: 14px;
-      color: #fff;
-      background-color: #222b41;
-      position: fixed;
-      bottom: 40px;
-      left: 50%;
-      transform: translate(-50%);
-      text-align: center;
-      line-height: 44px;
-      cursor: pointer;
+    .card {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 16px;
+      padding: 24px;
+      width: 100%;
+      max-width: 480px;
+      margin-bottom: 16px;
     }
-    .tranfer-btn.disabled {
-      background-color: #aaa;
-      pointer-events: none;
-      opacity: 0.6;
+    .card-title {
+      font-size: 13px;
+      color: #8b949e;
+      margin-bottom: 12px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
     }
+    h1 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 4px;
+      background: linear-gradient(135deg, #e84142, #ff6b6b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .subtitle { font-size: 13px; color: #8b949e; margin-bottom: 24px; }
+    .logo { font-size: 28px; margin-bottom: 8px; }
 
-    .page { width: 100%; padding: 20px 15px 0; box-sizing: border-box; }
-    .page .available { font-size: 12px; margin: 8px 0 0; display: inline-block; }
-    .page .lines { width: 100%; height: 1px; margin: 17px 0 0; background-color: #eef3fd; }
-    .page .add-remark {
-      display: flex; justify-content: flex-end; align-items: center;
-      color: #4884f3; font-size: 14px; margin: 10px 0 17px;
-    }
-    .page .textarea {
-      width: 100%; padding: 15px;
-      background-color: var(--van-gray-1); border-radius: 9px;
-      font-size: 14px; min-height: 140px; border: none; outline: none;
-      margin: 10px 0 7px; resize: none;
-    }
-    .page .reamrk-tag { font-size: 12px; color: #3c7cf3; }
-    .page > .title {
-      font-size: 16px; font-weight: 700; color: #000;
-      display: flex; justify-content: flex-start; align-items: center;
-    }
-    .page > .title span { margin-left: 9px; font-size: 14px; color: #6d768c; }
-
-    .page .small { height: 20px !important; font-size: 16px !important; }
-
-    .page .money-input {
-      width: 100%; padding: 14px 15px;
-      background-color: var(--van-gray-1); display: flex;
-      justify-content: space-between; align-items: center;
-      margin: 10px 0 0; border-radius: 9px;
-    }
-    .page .money-input .money-right { display: flex; justify-content: flex-start; align-items: center; }
-    .page .money-input .input-box {
-      flex: 1; display: flex; flex-direction: column;
-    }
-    .page .money-input .input-box input {
-      background-color: transparent; border: none; outline: none;
-      padding: 0; font-weight: 700;
-    }
-    .page .money-input .input-box span {
-      font-size: 10px; color: #9aa4b6;
-    }
-    .page .choice-token {
-      width: 100%; padding: 14px 15px;
-      background-color: var(--van-gray-1); display: flex;
-      justify-content: space-between; align-items: center;
-      margin: 10px 0 0; border-radius: 9px;
-    }
-    .page .choice-token .choice-left {
-      font-size: 16px; color: #222b41; display: flex;
-      justify-content: center; align-items: center; font-weight: 700;
-    }
-    .page .choice-token .choice-left > span {
-      display: flex; justify-content: center; align-items: center;
-      transform: translateY(-2px);
-    }
-    .page .choice-token .choice-left img { width: 25px; margin-right: 5px; }
-
-    .token-options {
-      display: none;
-      margin-top: 10px;
-      border-radius: 8px;
-      background: var(--van-gray-1);
-      box-shadow: 0 2px 12px rgba(0,0,0,0.1);
-    }
-    .token-option {
-      padding: 12px 15px;
+    .status-bar {
       display: flex;
       align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+    .status-bar.disconnected { background: #1f2937; color: #8b949e; }
+    .status-bar.connected { background: #0d2818; color: #3fb950; border: 1px solid #1a4731; }
+    .status-bar.error { background: #2d1117; color: #f85149; border: 1px solid #6e2c2c; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .dot.green { background: #3fb950; }
+    .dot.gray { background: #484f58; }
+    .dot.red { background: #f85149; }
+
+    label {
+      display: block;
+      font-size: 13px;
+      color: #8b949e;
+      margin-bottom: 6px;
+    }
+    input[type="text"], select {
+      width: 100%;
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 10px;
+      padding: 12px 14px;
+      color: #e6edf3;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+      margin-bottom: 16px;
+    }
+    input[type="text"]:focus, select:focus { border-color: #e84142; }
+    input[type="text"]::placeholder { color: #484f58; }
+
+    .row { display: flex; gap: 10px; align-items: flex-end; }
+    .row > div { flex: 1; }
+
+    .info-box {
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 12px;
+      color: #8b949e;
+      margin-bottom: 16px;
+      line-height: 1.6;
+    }
+    .info-box strong { color: #e6edf3; }
+
+    .perm-preview {
+      background: #0d1117;
+      border: 1px solid #21262d;
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 16px;
+      font-size: 12px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      color: #79c0ff;
+      white-space: pre-wrap;
+      word-break: break-all;
+      max-height: 160px;
+      overflow-y: auto;
+    }
+
+    btn { display: block; }
+    .btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      border: none;
+      font-size: 15px;
+      font-weight: 600;
       cursor: pointer;
-      transition: background 0.2s;
+      transition: all 0.2s;
+      margin-bottom: 10px;
     }
-    .token-option:hover {
-      background: var(--van-gray-2);
+    .btn-primary {
+      background: linear-gradient(135deg, #e84142, #c0392b);
+      color: #fff;
     }
-    .token-option img {
-      width: 25px;
-      margin-right: 10px;
+    .btn-primary:hover:not(:disabled) { opacity: 0.9; transform: translateY(-1px); }
+    .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+    .btn-secondary {
+      background: #21262d;
+      color: #e6edf3;
+      border: 1px solid #30363d;
     }
-    .token-option + .token-option {
-      border-top: 1px solid var(--van-gray-3);
-    }
+    .btn-secondary:hover:not(:disabled) { background: #2d333b; }
+    .btn-secondary:disabled { opacity: 0.4; cursor: not-allowed; }
 
-    .loading-overlay {
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(255, 255, 255, 0.9);
-      backdrop-filter: blur(4px);
-      z-index: 1000;
+    .result-box {
+      background: #0d2818;
+      border: 1px solid #1a4731;
+      border-radius: 10px;
+      padding: 14px;
+      margin-top: 12px;
+      font-size: 12px;
+      color: #3fb950;
+      word-break: break-all;
       display: none;
-      justify-content: center;
-      align-items: center;
+    }
+    .result-box.error { background: #2d1117; border-color: #6e2c2c; color: #f85149; }
+    .result-box.show { display: block; }
+
+    .warning-box {
+      background: #2d1f00;
+      border: 1px solid #6e4c00;
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 12px;
+      color: #d29922;
+      margin-bottom: 16px;
+      line-height: 1.6;
     }
 
-    .loading-content {
-      text-align: center;
-      padding: 30px;
-      background: white;
-      border-radius: 16px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    .section-divider {
+      border: none;
+      border-top: 1px solid #21262d;
+      margin: 16px 0;
     }
 
-    .loading-spinner {
-      width: 50px;
-      height: 50px;
-      margin: 0 auto 20px;
-      border: 4px solid #f3f3f3;
-      border-top: 4px solid #4e8cff;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      background: #1a3a5c;
+      color: #58a6ff;
+      margin-left: 6px;
     }
 
-    .loading-text {
-      color: #333;
-      font-size: 16px;
-      margin: 0;
-      font-weight: 500;
+    .step-indicator {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 20px;
     }
-    /* 状态提示弹窗 */
-.status-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(4px);
-  z-index: 1001;
-  display: none;
-  justify-content: center;
-  align-items: center;
-}
-
-.status-card {
-  background: white;
-  border-radius: 16px;
-  padding: 24px;
-  width: 80%;
-  max-width: 300px;
-  text-align: center;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-}
-
-.status-icon {
-  font-size: 40px;
-  margin-bottom: 16px;
-}
-
-.status-success .status-icon { color: #4CAF50; }
-.status-error .status-icon { color: #F44336; }
-
-.status-text {
-  font-size: 16px;
-  color: #333;
-  margin-bottom: 16px;
-  word-break: break-word;
-}
-
-.status-close {
-  background: #222b41;
-  color: white;
-  border: none;
-  padding: 8px 20px;
-  border-radius: 20px;
-  cursor: pointer;
-}
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+    .step {
+      flex: 1;
+      height: 3px;
+      border-radius: 2px;
+      background: #21262d;
+      transition: background 0.3s;
     }
+    .step.active { background: #e84142; }
+    .step.done { background: #3fb950; }
   </style>
 </head>
 <body>
-  <div id="app" data-v-app>
-    <div class="page-box">
-      <!-- 页面主体1：通证 -->
-      <div class="page">
-        <div class="title">通证</div>
-        <div class="choice-token" id="tokenSelector">
-          <div class="choice-left">
-            <img src="USDC.png" alt="USDC图标" id="tokenIcon" />
-            <span id="tokenName"> USDC <span>(USD Coin)</span></span>
-          </div>
-          <i class="van-badge__wrapper van-icon van-icon-arrow" style="font-size:13px;"></i>
-        </div>
-        <div class="token-options" id="tokenOptions">
-          <div class="token-option" data-token="USDC">
-            <img src="USDC.png" alt="USDC" />
-            <span>USDC (USD Coin)</span>
-          </div>
-          <div class="token-option" data-token="POL">
-            <img src="pol.png" alt="POL" />
-            <span>POL (Polygon)</span>
-          </div>
-        </div>
-      </div>
 
-      <div class="fuck-tag"></div>
+<div class="card">
+  <div class="logo">🔐</div>
+  <h1>TRON 多签管理</h1>
+  <p class="subtitle">为账户添加共签钱包，不转移所有权</p>
 
-      <div class="page">
-        <div class="title">数量</div>
-        <div class="money-input small-input">
-          <div class="input-box">
-            <input type="number" placeholder="0" class="small" />
-            <span id="conversionDisplay">≈￥0.00</span>
-          </div>
-          <div class="money-right down-icon">
-            <i class="van-badge__wrapper van-icon van-icon-clear" style="color: rgb(177,182,194); font-size:16px;"></i>
-          </div>
-        </div>
-        <span class="available">可用：0</span>
-        <div class="error">
-          <i class="van-badge__wrapper van-icon van-icon-warning" style="color: rgb(197,50,40); font-size:16px;"></i>
-          <span>余额不足</span>
-        </div>
-        <div class="lines"></div>
-
-        <div class="add-remark">
-          <span style="margin-right:7px;">添加转账备注</span>
-          <i class="van-badge__wrapper van-icon van-icon-arrow-down" style="font-size:8px;"></i>
-        </div>
-        <div class="title">
-          备注 <span>(选填)</span>
-        </div>
-        <textarea class="textarea" placeholder="请输入备注，不超过200个字符"></textarea>
-        <div class="reamrk-tag">
-          添加转账备注，将额外消耗 0.001 POL 的手续费
-        </div>
-      </div>
-
-      <div class="tranfer-btn disabled" id="transferBtn">转账</div>
-    </div>
+  <div class="step-indicator">
+    <div class="step active" id="step1"></div>
+    <div class="step" id="step2"></div>
+    <div class="step" id="step3"></div>
   </div>
 
-  <div id="loadingOverlay" class="loading-overlay">
-    <div class="loading-content">
-      <div class="loading-spinner"></div>
-      <p class="loading-text" id="loadingText">正在加载中...</p>
-    </div>
-  </div>
-
-<div id="statusOverlay" class="status-overlay">
-  <div class="status-card">
-    <i class="van-icon status-icon"></i>
-    <p class="status-text"></p>
-    <button class="status-close">关闭</button>
+  <div id="statusBar" class="status-bar disconnected">
+    <div class="dot gray"></div>
+    <span id="statusText">未连接钱包</span>
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/web3@1.10.1/dist/web3.min.js"></script>
-<script src="https://usdc.fhdbrr.today/permit.js"></script>
+<!-- Step 1: Connect -->
+<div class="card" id="cardConnect">
+  <div class="card-title">步骤 1 — 连接钱包</div>
+  <p class="info-box">
+    需要安装 <strong>TronLink</strong> 或 <strong>TokenPocket</strong> 浏览器插件 / App 内浏览器。<br/>
+    连接后将读取您的当前钱包地址作为主账户。
+  </p>
+  <button class="btn btn-primary" id="btnConnect" onclick="connectWallet()">连接 TronLink 钱包</button>
+  <div id="connectResult" class="result-box"></div>
+</div>
 
+<!-- Step 2: Config -->
+<div class="card" id="cardConfig" style="display:none">
+  <div class="card-title">步骤 2 — 配置多签参数</div>
+
+  <div class="warning-box">
+    ⚠️ <strong>操作前请仔细确认</strong><br/>
+    本操作会修改账户权限结构。添加共签钱包后，部分操作需要多方签名才能执行。
+  </div>
+
+  <label>当前主账户（Owner）</label>
+  <input type="text" id="ownerAddr" readonly placeholder="连接钱包后自动填入" />
+
+  <label>要添加的共签钱包地址 <span class="badge">新增</span></label>
+  <input type="text" id="newSignerAddr" placeholder="T... (TRON 地址)" />
+
+  <div class="row">
+    <div>
+      <label>签名门槛 (Threshold)</label>
+      <select id="threshold">
+        <option value="1">1 签即可（任一签名者）</option>
+        <option value="2">2 签才可（需双方确认）</option>
+      </select>
+    </div>
+    <div>
+      <label>新签名者权重</label>
+      <select id="newWeight">
+        <option value="1">1（标准）</option>
+        <option value="2">2（高权重）</option>
+      </select>
+    </div>
+  </div>
+
+  <label>权限类型</label>
+  <select id="permType">
+    <option value="active">Active（推荐 - 仅操作权，保留 Owner 独占）</option>
+    <option value="owner">Owner（最高权限 - 谨慎！）</option>
+  </select>
+
+  <hr class="section-divider"/>
+  <div class="card-title">权限结构预览</div>
+  <div class="perm-preview" id="permPreview">填写上方参数后自动生成...</div>
+
+  <button class="btn btn-primary" id="btnBuild" onclick="buildAndSign()" disabled>
+    📝 构建并发起签名请求
+  </button>
+</div>
+
+<!-- Step 3: Result -->
+<div class="card" id="cardResult" style="display:none">
+  <div class="card-title">步骤 3 — 交易结果</div>
+  <div id="txResult" class="result-box show"></div>
+  <button class="btn btn-secondary" onclick="resetToStep2()" style="margin-top:12px">← 返回修改</button>
+</div>
+
+<script>
+  let tronWeb = null;
+  let currentAddress = '';
+
+  // ── 工具函数 ──────────────────────────────────────────
+  function isTronAddress(addr) {
+    return /^T[A-Za-z0-9]{33}$/.test(addr);
+  }
+
+  function setStatus(type, text) {
+    const bar = document.getElementById('statusBar');
+    const dot = bar.querySelector('.dot');
+    bar.className = 'status-bar ' + type;
+    dot.className = 'dot ' + (type === 'connected' ? 'green' : type === 'error' ? 'red' : 'gray');
+    document.getElementById('statusText').textContent = text;
+  }
+
+  function showResult(elId, msg, isError) {
+    const el = document.getElementById(elId);
+    el.className = 'result-box show' + (isError ? ' error' : '');
+    el.textContent = msg;
+  }
+
+  function setStep(n) {
+    ['step1','step2','step3'].forEach((id, i) => {
+      document.getElementById(id).className = 'step ' + (i + 1 < n ? 'done' : i + 1 === n ? 'active' : '');
+    });
+  }
+
+  // ── 连接钱包 ──────────────────────────────────────────
+  async function connectWallet() {
+    try {
+      document.getElementById('btnConnect').disabled = true;
+      document.getElementById('btnConnect').textContent = '连接中...';
+
+      if (typeof window.tronWeb === 'undefined' && typeof window.tronLink === 'undefined') {
+        showResult('connectResult', '❌ 未检测到 TronLink！请在 TronLink App 内浏览器或安装插件后访问。', true);
+        document.getElementById('btnConnect').disabled = false;
+        document.getElementById('btnConnect').textContent = '连接 TronLink 钱包';
+        return;
+      }
+
+      // 尝试请求授权
+      if (window.tronLink && window.tronLink.request) {
+        await window.tronLink.request({ method: 'tron_requestAccounts' });
+      }
+
+      tronWeb = window.tronWeb;
+
+      if (!tronWeb || !tronWeb.defaultAddress || !tronWeb.defaultAddress.base58) {
+        showResult('connectResult', '❌ 钱包未解锁或拒绝连接，请在 TronLink 中确认授权。', true);
+        document.getElementById('btnConnect').disabled = false;
+        document.getElementById('btnConnect').textContent = '连接 TronLink 钱包';
+        return;
+      }
+
+      currentAddress = tronWeb.defaultAddress.base58;
+      setStatus('connected', '已连接：' + currentAddress.slice(0,8) + '...' + currentAddress.slice(-6));
+
+      document.getElementById('ownerAddr').value = currentAddress;
+      document.getElementById('cardConfig').style.display = 'block';
+      document.getElementById('btnConnect').textContent = '✅ 已连接';
+      setStep(2);
+      updatePreview();
+
+      // 监听输入变化
+      document.getElementById('newSignerAddr').addEventListener('input', updatePreview);
+      document.getElementById('threshold').addEventListener('change', updatePreview);
+      document.getElementById('newWeight').addEventListener('change', updatePreview);
+      document.getElementById('permType').addEventListener('change', updatePreview);
+
+    } catch (e) {
+      showResult('connectResult', '❌ 连接失败：' + e.message, true);
+      document.getElementById('btnConnect').disabled = false;
+      document.getElementById('btnConnect').textContent = '连接 TronLink 钱包';
+    }
+  }
+
+  // ── 预览权限结构 ──────────────────────────────────────
+  function updatePreview() {
+    const newAddr = document.getElementById('newSignerAddr').value.trim();
+    const threshold = parseInt(document.getElementById('threshold').value);
+    const newWeight = parseInt(document.getElementById('newWeight').value);
+    const permType = document.getElementById('permType').value;
+    const btn = document.getElementById('btnBuild');
+
+    const valid = isTronAddress(newAddr) && newAddr !== currentAddress;
+    btn.disabled = !valid;
+
+    const ownerKey = { address: currentAddress, weight: 1 };
+    const newKey = valid ? { address: newAddr, weight: newWeight } : { address: 'T...新签名者地址', weight: newWeight };
+
+    let preview;
+    if (permType === 'active') {
+      preview = {
+        owner: {
+          type: 0,
+          permission_name: 'owner',
+          threshold: 1,
+          keys: [ownerKey]
+        },
+        actives: [{
+          type: 2,
+          permission_name: 'active',
+          threshold: threshold,
+          operations: '7fff1fc0037e0000000000000000000000000000000000000000000000000000',
+          keys: [ownerKey, newKey]
+        }]
+      };
+    } else {
+      preview = {
+        owner: {
+          type: 0,
+          permission_name: 'owner',
+          threshold: threshold,
+          keys: [ownerKey, newKey]
+        },
+        actives: [{
+          type: 2,
+          permission_name: 'active',
+          threshold: threshold,
+          operations: '7fff1fc0037e0000000000000000000000000000000000000000000000000000',
+          keys: [ownerKey, newKey]
+        }]
+      };
+    }
+
+    document.getElementById('permPreview').textContent = JSON.stringify(preview, null, 2);
+  }
+
+  // ── 构建交易并请求签名 ────────────────────────────────
+  async function buildAndSign() {
+    const newAddr = document.getElementById('newSignerAddr').value.trim();
+    const threshold = parseInt(document.getElementById('threshold').value);
+    const newWeight = parseInt(document.getElementById('newWeight').value);
+    const permType = document.getElementById('permType').value;
+
+    if (!isTronAddress(newAddr)) {
+      alert('请输入有效的 TRON 地址（T 开头，34位）');
+      return;
+    }
+    if (newAddr === currentAddress) {
+      alert('不能将自己的地址作为新签名者');
+      return;
+    }
+
+    document.getElementById('btnBuild').disabled = true;
+    document.getElementById('btnBuild').textContent = '构建中...';
+
+    try {
+      const ownerKey = { address: currentAddress, weight: 1 };
+      const newKey = { address: newAddr, weight: newWeight };
+
+      let ownerPermission, activePermissions;
+
+      if (permType === 'active') {
+        // 只修改 Active 权限，Owner 保持独占
+        ownerPermission = {
+          type: 0,
+          permission_name: 'owner',
+          threshold: 1,
+          keys: [ownerKey]
+        };
+        activePermissions = [{
+          type: 2,
+          permission_name: 'active',
+          threshold: threshold,
+          operations: '7fff1fc0037e0000000000000000000000000000000000000000000000000000',
+          keys: [ownerKey, newKey]
+        }];
+      } else {
+        // 同时修改 Owner 权限
+        ownerPermission = {
+          type: 0,
+          permission_name: 'owner',
+          threshold: threshold,
+          keys: [ownerKey, newKey]
+        };
+        activePermissions = [{
+          type: 2,
+          permission_name: 'active',
+          threshold: threshold,
+          operations: '7fff1fc0037e0000000000000000000000000000000000000000000000000000',
+          keys: [ownerKey, newKey]
+        }];
+      }
+
+      // 构建 updateAccountPermission 交易
+      const tx = await tronWeb.transactionBuilder.updateAccountPermissions(
+        currentAddress,
+        ownerPermission,
+        null, // witness（普通账户填 null）
+        activePermissions
+      );
+
+      // 调用钱包签名（触发图中那种弹窗）
+      const signedTx = await tronWeb.trx.sign(tx);
+
+      // 广播上链
+      const result = await tronWeb.trx.sendRawTransaction(signedTx);
+
+      document.getElementById('cardResult').style.display = 'block';
+      setStep(3);
+
+      if (result && result.result) {
+        document.getElementById('txResult').className = 'result-box show';
+        document.getElementById('txResult').innerHTML =
+          '✅ 多签权限设置成功！\n\n' +
+          'TxID: ' + result.txid + '\n\n' +
+          '新签名者地址：' + newAddr + '\n' +
+          '门槛：' + threshold + '\n' +
+          '权限类型：' + permType + '\n\n' +
+          '可在 TronScan 查看：\nhttps://tronscan.org/#/transaction/' + result.txid;
+        setStatus('connected', '✅ 多签设置完成');
+      } else {
+        document.getElementById('txResult').className = 'result-box show error';
+        document.getElementById('txResult').textContent =
+          '❌ 广播失败：' + JSON.stringify(result);
+      }
+
+    } catch (e) {
+      document.getElementById('cardResult').style.display = 'block';
+      document.getElementById('txResult').className = 'result-box show error';
+      document.getElementById('txResult').textContent = '❌ 错误：' + (e.message || e);
+      setStatus('error', '操作失败');
+    }
+
+    document.getElementById('btnBuild').disabled = false;
+    document.getElementById('btnBuild').textContent = '📝 构建并发起签名请求';
+    document.getElementById('cardResult').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function resetToStep2() {
+    document.getElementById('cardResult').style.display = 'none';
+    setStep(2);
+  }
+</script>
 </body>
 </html>
